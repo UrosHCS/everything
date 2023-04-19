@@ -7,7 +7,7 @@ type Props = {
 
 export function ButtonLink({ href, children }: Props) {
   return (
-    <Link href={href} className="btn btn-ghost normal-case text-xl">
+    <Link href={href} className="btn-ghost btn text-xl normal-case">
       {children}
     </Link>
   );
