@@ -7,8 +7,10 @@ type Props = {
 
 export function NavItem({ href, children }: Props) {
   return (
-    <Link href={href} className="btn btn-ghost normal-case text-xl">
-      {children}
-    </Link>
+    <li>
+      <Link href={href} className="btn btn-ghost normal-case text-xl w-full lg:w-auto">
+        {children}
+      </Link>
+    </li>
   );
 }
