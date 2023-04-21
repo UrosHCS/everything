@@ -1,6 +1,6 @@
+import LoginOrProfile from './LoginOrProfile';
 import { NavItem } from './NavItem';
 import './header.css';
-import Link from 'next/link';
 
 export function Header() {
   return (
@@ -25,11 +25,7 @@ export function Header() {
               <NavItem href="/contact">Contact</NavItem>
             </ul>
           </div>
-          <div className="">
-            <Link href="/login" className="btn-ghost btn text-xl normal-case">
-              Login
-            </Link>
-          </div>
+          <LoginOrProfile />
         </nav>
       </header>
     </>

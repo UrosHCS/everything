@@ -18,7 +18,8 @@
   "javascript.preferences.quoteStyle": "single",
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "typescript.tsdk": "node_modules/typescript/lib",
-  "search.exclude": {
-    "**/node_modules": true
-  },
+  "cSpell.words": [
+    "firestore"
+  ],
+  "search.useIgnoreFiles": true,
 }

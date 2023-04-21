@@ -1,7 +1,7 @@
 export default function About() {
   return (
     <section className="w-3/4">
-      <h1 className="text-3xl font-semibold py-4">We are now!</h1>
+      <h1 className="py-4 text-3xl font-semibold">We are now!</h1>
       <p className="mb-4">Welcome to our website, where you can find everything you need all in one place!</p>
       <p className="mb-4">
         Our website is a one-stop-shop for all your needs, whether you&apos;re looking for information, products,
