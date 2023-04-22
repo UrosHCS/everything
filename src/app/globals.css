@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.burger:hover .burger-items {
+.drop:focus-within .drop-items {
   visibility: visible;
-}
-
-.btn-ghost {
-  background-color: transparent;
 }

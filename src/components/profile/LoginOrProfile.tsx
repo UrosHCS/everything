@@ -1,18 +1,17 @@
 'use client';
 
+import { NavItem } from '../NavItem';
 import ProfileButton from './ProfileButton';
-import { signIn, useSession } from 'next-auth/react';
+import { useSession } from '@lib/firebase/firebase-context';
 
 export default function LoginOrProfile() {
-  const { data, status } = useSession();
+  const { user, status } = useSession();
 
-  if (status === 'unauthenticated') {
-    return (
-      <button onClick={() => signIn('google')} className="btn-ghost btn text-xl normal-case">
-        Login
-      </button>
-    );
+  if (status === 'loading') return <p>spinner</p>;
+
+  if (!user) {
+    return <NavItem href="/login">Login</NavItem>;
   }
 
-  return <ProfileButton user={data?.user} />;
+  return <ProfileButton user={user} />;
 }
