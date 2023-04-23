@@ -1,8 +1,8 @@
 'use client';
 
 import { NavItem } from '../NavItem';
-import ProfileButton from './ProfileButton';
-import { useSession } from '@lib/firebase/firebase-context';
+import ProfileButtonDropdown from './ProfileButtonDropdown';
+import { useSession } from '@lib/firebase/context';
 
 export default function LoginOrProfile() {
   const { user, status } = useSession();
@@ -13,5 +13,5 @@ export default function LoginOrProfile() {
     return <NavItem href="/login">Login</NavItem>;
   }
 
-  return <ProfileButton user={user} />;
+  return <ProfileButtonDropdown user={user} />;
 }

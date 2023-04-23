@@ -1,7 +1,7 @@
 'use client';
 
 import { signInWithGoogle } from '@lib/firebase';
-import { useSession } from '@lib/firebase/firebase-context';
+import { useSession } from '@lib/firebase/context';
 import { redirect } from 'next/navigation';
 
 // import { FormEvent, useState } from 'react';

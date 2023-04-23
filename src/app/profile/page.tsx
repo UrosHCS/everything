@@ -1,7 +1,7 @@
 'use client';
 
 import ProfileImage from '../../components/profile/ProfileImage';
-import { useSession } from '@lib/firebase/firebase-context';
+import { useSession } from '@lib/firebase/context';
 
 export default function Profile() {
   const { user, status } = useSession();

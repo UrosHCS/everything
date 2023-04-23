@@ -1,7 +1,7 @@
 'use client';
 
 import { Header } from '../components/Header';
-import { FirebaseSessionProvider } from '@lib/firebase/firebase-context';
+import { FirebaseSessionProvider } from '@lib/firebase/context';
 import React from 'react';
 
 type Props = {
