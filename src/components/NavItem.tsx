@@ -13,7 +13,7 @@ export function NavItem({ href, children }: Props) {
   const activeClass = pathname === href ? 'btn-active' : '';
 
   return (
-    <Link href={href} className={`btn-ghost btn w-full text-xl normal-case lg:w-auto ${activeClass}`}>
+    <Link href={href} className={`btn-ghost btn text-xl normal-case ${activeClass}`}>
       {children}
     </Link>
   );

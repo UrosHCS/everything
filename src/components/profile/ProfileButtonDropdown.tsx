@@ -1,8 +1,8 @@
 'use client';
 
-import useDropdown from '@lib/hooks/useDropdown';
 import ProfileImage from './ProfileImage';
 import { logout } from '@lib/firebase';
+import useDropdown from '@lib/hooks/useDropdown';
 import { User } from 'firebase/auth';
 import Link from 'next/link';
 
@@ -15,9 +15,7 @@ export default function ProfileButtonDropdown({ user }: Props) {
 
   return (
     <div onClick={() => setIsOpen(!isOpen)} ref={ref} className="relative">
-      <button
-        className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-slate-400"
-      >
+      <button className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-slate-400">
         <ProfileImage user={user} />
       </button>
       {isOpen && (
