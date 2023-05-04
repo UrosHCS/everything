@@ -12,7 +12,7 @@ export default function Session({ children }: Props) {
   return (
     <FirebaseSessionProvider>
       <Header />
-      <main className="flex h-full grow flex-col items-center justify-between p-4">{children}</main>
+      <main className="flex h-full grow flex-col overflow-hidden p-4">{children}</main>
     </FirebaseSessionProvider>
   );
 }
