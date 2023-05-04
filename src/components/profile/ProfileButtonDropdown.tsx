@@ -15,11 +15,11 @@ export default function ProfileButtonDropdown({ user }: Props) {
 
   return (
     <div onClick={() => setIsOpen(!isOpen)} ref={ref} className="relative">
-      <button className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-slate-400">
+      <button className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-purple-300">
         <ProfileImage user={user} />
       </button>
       {isOpen && (
-        <ul className="absolute right-0 mt-3 flex flex-col gap-2 rounded bg-slate-800 p-1 shadow">
+        <ul className="absolute right-0 mt-3 flex flex-col gap-2 rounded bg-purple-800 p-1 shadow">
           <li>
             <Link href="/profile" className="btn-ghost btn">
               Profile

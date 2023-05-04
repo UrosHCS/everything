@@ -1,6 +1,6 @@
 // eslint-disable-next-line prettier/prettier
 import './dotenv';
-import { firebase, firestoreInstance } from '../firebase';
+import { app, auth, firestoreInstance } from '../firebase';
 // eslint-disable-next-line prettier/prettier
 import { repos } from '../repositories/repos';
 import os from 'os';
@@ -17,7 +17,8 @@ const help: string[] = [];
 
 const registerVariables = async (register: RegisterFunction) => {
   register('firestoreInstance', firestoreInstance, 'firestore instance object');
-  register('firebase', firebase, 'firebase app object');
+  register('app', app, 'firebase app object');
+  register('auth', auth, 'firebase auth object');
   register('repos', repos, 'all the repos');
 };
 

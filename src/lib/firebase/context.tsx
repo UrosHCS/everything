@@ -35,6 +35,10 @@ export function FirebaseSessionProvider({ children }: Props) {
   useEffect(() => {
     onAuthStateChanged(auth, user => {
       setSession(createSession(user, 'unauthenticated'));
+
+      if (!user) return;
+
+      /** @todo real time stuff */
     });
   }, []);
 
@@ -42,7 +46,9 @@ export function FirebaseSessionProvider({ children }: Props) {
 }
 
 function createSession(user: User | null, fallbackStatus: 'loading' | 'unauthenticated'): Session {
-  if (!user) return { status: fallbackStatus, user: null };
+  if (!user) {
+    return { status: fallbackStatus, user: null };
+  }
 
   return { status: 'authenticated', user };
 }

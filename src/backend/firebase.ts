@@ -3,14 +3,19 @@ import admin from 'firebase-admin';
 
 const { serviceAccount } = serverConfig.firebaseAdmin;
 
-const firebase = admin.initializeApp({
-  credential: admin.credential.cert({
-    projectId: serviceAccount.project_id,
-    privateKey: serviceAccount.private_key,
-    clientEmail: serviceAccount.client_email,
-  }),
-});
+const app = (() => {
+  if (admin.apps.length) return admin.app();
 
-const firestoreInstance = admin.firestore(firebase);
+  return admin.initializeApp({
+    credential: admin.credential.cert({
+      projectId: serviceAccount.project_id,
+      privateKey: serviceAccount.private_key,
+      clientEmail: serviceAccount.client_email,
+    }),
+  });
+})();
 
-export { firebase, firestoreInstance };
+const firestoreInstance = admin.firestore(app);
+const auth = admin.auth(app);
+
+export { app, auth, firestoreInstance };

@@ -1,5 +1,5 @@
 import { Repository } from './Repository';
-import { Bot, Conversation, User } from '@lib/firebase/models';
+import { Bot, Conversation, User } from './models';
 
 export const repos = {
   bots: new Repository<Bot>('bots'),
