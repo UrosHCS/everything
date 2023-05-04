@@ -4,7 +4,7 @@ import LoginOrProfile from './profile/LoginOrProfile';
 export function Header() {
   return (
     <>
-      <header className="sticky inset-x-0 top-0">
+      <header className="sticky">
         <nav className="flex items-center justify-between bg-purple-800 p-2">
           <div className="relative lg:static">
             <button className="drop btn-ghost btn-circle btn lg:hidden">

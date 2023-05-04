@@ -15,7 +15,48 @@ type UnauthenticatedConversation = {
 const emptyConversation: UnauthenticatedConversation = {
   botId: '1',
   createdAt: null,
-  messages: [],
+  messages: [
+    {
+      question: {
+        body: 'Hello there',
+        createdAt: new Date().toISOString(),
+      },
+      answer: {
+        body: 'Hello there Hello there Hello there Hello there Hello there Hello there Hello there',
+        createdAt: new Date().toISOString(),
+      },
+    },
+    {
+      question: {
+        body: 'Hello there',
+        createdAt: new Date().toISOString(),
+      },
+      answer: {
+        body: 'Hello there Hello there Hello there Hello there Hello there Hello there Hello there',
+        createdAt: new Date().toISOString(),
+      },
+    },
+    {
+      question: {
+        body: 'Hello there',
+        createdAt: new Date().toISOString(),
+      },
+      answer: {
+        body: 'Hello there Hello there Hello there Hello there Hello there Hello there Hello there',
+        createdAt: new Date().toISOString(),
+      },
+    },
+    {
+      question: {
+        body: 'Hello there',
+        createdAt: new Date().toISOString(),
+      },
+      answer: {
+        body: 'Hello there Hello there Hello there Hello there Hello there Hello there Hello there',
+        createdAt: new Date().toISOString(),
+      },
+    },
+  ],
   userId: null,
 };
 
@@ -80,25 +121,27 @@ export default function Chat() {
   }
 
   return (
-    <section className="w-full lg:w-1/2">
+    <section className="flex w-full grow flex-col lg:w-1/2">
       <h2 className="py-4 text-3xl font-semibold">Druzila</h2>
 
-      <div className="flex flex-col gap-2 rounded-lg border border-purple-500 bg-purple-800 p-4">
-        <Message bot={true}>How may I help you, dear?</Message>
-        {conversation.messages.map((message, i) => {
-          return (
-            <>
-              <Message key={`q${i}`} bot={false}>
-                {message.question.body}
-              </Message>
-              {message.answer && (
-                <Message key={`a${i}`} bot={true}>
-                  {message.answer.body}
+      <div className="flex grow flex-col gap-2 rounded-lg border border-purple-500 bg-purple-800 p-4">
+        <div className="flex max-h-full grow flex-col gap-2 overflow-auto">
+          <Message bot={true}>How may I help you, dear?</Message>
+          {conversation.messages.map((message, i) => {
+            return (
+              <>
+                <Message key={`q${i}`} bot={false}>
+                  {message.question.body}
                 </Message>
-              )}
-            </>
-          );
-        })}
+                {message.answer && (
+                  <Message key={`a${i}`} bot={true}>
+                    {message.answer.body}
+                  </Message>
+                )}
+              </>
+            );
+          })}
+        </div>
 
         <div className="pt-2">
           <form className="relative" onSubmit={ask}>
