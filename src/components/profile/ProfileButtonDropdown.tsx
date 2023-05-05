@@ -1,5 +1,6 @@
 'use client';
 
+import { NavItem } from '../NavItem';
 import ProfileImage from './ProfileImage';
 import { logout } from '@lib/firebase';
 import useDropdown from '@lib/hooks/useDropdown';
@@ -19,14 +20,12 @@ export default function ProfileButtonDropdown({ user }: Props) {
         <ProfileImage user={user} />
       </button>
       {isOpen && (
-        <ul className="absolute right-0 mt-3 flex flex-col gap-2 rounded bg-purple-800 p-1 shadow">
+        <ul className="absolute right-0 mt-4 flex flex-col gap-2 rounded bg-purple-800 p-1 shadow">
           <li>
-            <Link href="/profile" className="btn-ghost btn">
-              Profile
-            </Link>
+            <NavItem href="/profile">Profile</NavItem>
           </li>
           <li>
-            <button className="btn-ghost btn" onClick={logout}>
+            <button className="inline-block w-full rounded p-4 text-xl" onClick={logout}>
               Logout
             </button>
           </li>

@@ -2,13 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --purple-600: #9333ea;
+  --purple-700: #7e22ce;
+  --purple-800: #6b21a8;
+  --purple-900: #581c87;
+  --purple-950: #3b0764;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--purple-600) var(--purple-800);
+}
+
+*::-webkit-scrollbar {
+  /* Add 0.2rem to fixed width so scrollbar will get wider when user zooms in */
+  width: calc(10px + 0.2em);
+}
+
+*::-webkit-scrollbar-corner,
+*::-webkit-resizer,
+*::-webkit-scrollbar-track {
+  background: var(--purple-800);
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--purple-600);
+  border-radius: 8px;
+  border: 3px solid var(--purple-800);
+}
+
 .drop-items {
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.1s ease-out, visibility 0.1s ease-out;
 }
 
-.drop:focus ~ .drop-items {
+.drop:focus-within .drop-items {
   opacity: 1;
   visibility: visible;
 }

@@ -10,10 +10,10 @@ type Props = {
 
 export function NavItem({ href, children }: Props) {
   const pathname = usePathname();
-  const activeClass = pathname === href ? 'btn-active' : '';
+  const activeClass = pathname === href ? 'bg-purple-500' : '';
 
   return (
-    <Link href={href} className={`btn-ghost btn text-xl normal-case ${activeClass}`}>
+    <Link href={href} className={`inline-block w-full rounded p-4 text-xl ${activeClass}`}>
       {children}
     </Link>
   );

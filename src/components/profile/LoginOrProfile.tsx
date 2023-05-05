@@ -10,7 +10,11 @@ export default function LoginOrProfile() {
   if (status === 'loading') return <p>spinner</p>;
 
   if (!user) {
-    return <NavItem href="/login">Login</NavItem>;
+    return (
+      <div>
+        <NavItem href="/login">Login</NavItem>
+      </div>
+    );
   }
 
   return <ProfileButtonDropdown user={user} />;

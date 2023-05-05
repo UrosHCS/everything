@@ -3,7 +3,7 @@
 import Message from './Message';
 import { useSession } from '@lib/firebase/context';
 import { Conversation, QnA } from '@lib/firebase/models';
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, Fragment, useEffect, useState } from 'react';
 
 type UnauthenticatedConversation = {
   botId: string;
@@ -15,16 +15,7 @@ type UnauthenticatedConversation = {
 const emptyConversation: UnauthenticatedConversation = {
   botId: '1',
   createdAt: null,
-  messages: Array(7).fill({
-    question: {
-      body: 'Hello there',
-      createdAt: new Date().toISOString(),
-    },
-    answer: {
-      body: 'Hello there Hello there Hello there Hello there Hello there Hello there Hello there',
-      createdAt: new Date().toISOString(),
-    },
-  }),
+  messages: [],
   userId: null,
 };
 
@@ -87,31 +78,25 @@ export default function Chat() {
         });
       });
   }
-
+  console.log('beginning render');
   return (
-    <section className="flex h-full flex-col overflow-hidden lg:w-1/2">
-      <h2 className="shrink-0 py-4 text-3xl font-semibold">Druzila</h2>
+    <section className="flex h-full w-full max-w-xl flex-col overflow-y-hidden">
+      <h2 className="py-4 text-3xl font-semibold">Druzila</h2>
 
-      <div className="flex flex-col gap-4 overflow-hidden rounded-lg border border-purple-500 bg-purple-800 p-4">
-        <div className="flex flex-col gap-2 overflow-y-auto">
+      <div className="flex h-full flex-col overflow-y-hidden rounded-lg border border-purple-500 bg-purple-800">
+        <div className="flex h-full flex-col gap-2 overflow-y-auto p-4">
           <Message bot={true}>How may I help you, dear?</Message>
           {conversation.messages.map((message, i) => {
             return (
-              <>
-                <Message key={`q${i}`} bot={false}>
-                  {message.question.body}
-                </Message>
-                {message.answer && (
-                  <Message key={`a${i}`} bot={true}>
-                    {message.answer.body}
-                  </Message>
-                )}
-              </>
+              <Fragment key={i}>
+                <Message bot={false}>{message.question.body}</Message>
+                {message.answer && <Message bot={true}>{message.answer.body}</Message>}
+              </Fragment>
             );
           })}
         </div>
 
-        <div className="shrink-0">
+        <div className="p-2">
           <form className="relative" onSubmit={ask}>
             <input
               className="w-full rounded-lg border border-purple-500 bg-gradient-to-r from-purple-500 to-fuchsia-400 p-2 pr-10 text-purple-700"

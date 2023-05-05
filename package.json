@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build --turbo",
-    "start": "next start --turbo",
-    "lint": "next lint --turbo",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
     "repl": "ts-node ./src/backend/cli/repl.ts"
   },
   "dependencies": {
