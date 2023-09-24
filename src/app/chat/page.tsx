@@ -1,96 +1,34 @@
 'use client';
 
 import Message from './Message';
+import { useConversation } from './useConversation';
 import { useSession } from '@lib/firebase/context';
-import { Conversation, QnA } from '@lib/firebase/models';
-import { FormEvent, Fragment, useEffect, useState } from 'react';
-
-type UnauthenticatedConversation = {
-  botId: string;
-  createdAt: null;
-  messages: QnA[];
-  userId: null;
-};
-
-const emptyConversation: UnauthenticatedConversation = {
-  botId: '1',
-  createdAt: null,
-  messages: [],
-  userId: null,
-};
+import { Fragment } from 'react';
 
 export default function Chat() {
   const session = useSession();
 
-  const [conversation, setConversation] = useState<Conversation | UnauthenticatedConversation>(emptyConversation);
-
-  const [question, setQuestion] = useState('');
-
-  useEffect(() => {
-    if (!session.user) return;
-
-    setConversation(emptyConversation);
-  }, [session.user]);
+  const { conversation, question, setQuestion, ask, streamingMessage } = useConversation();
 
   if (session.status === 'loading') return <div>Loading...</div>;
 
   if (session.status === 'unauthenticated') return <div>Unauthenticated</div>;
 
-  const user = session.user;
-
-  function ask(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const cachedQuestion = question;
-    setQuestion('');
-    setConversation(old => {
-      const now = new Date().toISOString();
-      const message = { question: { body: cachedQuestion, createdAt: now } };
-
-      return {
-        botId: old.botId,
-        createdAt: old.createdAt ?? now,
-        userId: user.uid,
-        messages: [...old.messages, message],
-      };
-    });
-
-    user
-      .getIdToken()
-      .then(token => {
-        return fetch('/api/ask', {
-          method: 'POST',
-          body: JSON.stringify({ question: cachedQuestion }),
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        });
-      })
-      .then(res => res.json() as Promise<QnA>)
-      .then(message => {
-        setConversation(old => {
-          const newMessages = [...old.messages];
-          newMessages[newMessages.length - 1] = message;
-          return {
-            ...old,
-            messages: newMessages,
-          };
-        });
-      });
-  }
-  console.log('beginning render');
   return (
     <section className="flex h-full w-full max-w-xl flex-col overflow-y-hidden">
-      <h2 className="py-4 text-3xl font-semibold">Druzila</h2>
+      <h2 className="py-4 text-3xl font-semibold">Druzzila</h2>
 
       <div className="flex h-full flex-col overflow-y-hidden rounded-lg border border-purple-500 bg-purple-800">
         <div className="flex h-full flex-col gap-2 overflow-y-auto p-4">
           <Message bot={true}>How may I help you, dear?</Message>
           {conversation.messages.map((message, i) => {
+            const isLastMessage = conversation.messages.length === i + 1;
+            const answer = (isLastMessage && streamingMessage) || message.answer?.body;
+
             return (
               <Fragment key={i}>
                 <Message bot={false}>{message.question.body}</Message>
-                {message.answer && <Message bot={true}>{message.answer.body}</Message>}
+                {answer && <Message bot={true}>{answer}</Message>}
               </Fragment>
             );
           })}

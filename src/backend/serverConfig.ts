@@ -1,6 +1,10 @@
 import z from 'zod';
 
 const ServerConfig = z.object({
+  openai: z.object({
+    apiEndpoint: z.string(),
+    apiKey: z.string(),
+  }),
   firebaseAdmin: z.object({
     serviceAccount: z.object({
       type: z.string(),
@@ -20,6 +24,10 @@ const ServerConfig = z.object({
 type ServerConfig = z.infer<typeof ServerConfig>;
 
 export const serverConfig: ServerConfig = ServerConfig.parse({
+  openai: {
+    apiEndpoint: 'https://api.openai.com/v1/chat/completions',
+    apiKey: process.env.OPENAI_API_KEY,
+  },
   firebaseAdmin: {
     serviceAccount: {
       type: process.env.FIREBASE_SERVICE_ACCOUNT_TYPE,

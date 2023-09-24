@@ -1,14 +1,19 @@
 import { AuthenticationError } from './errors/AuthenticationError';
 import { auth } from '@backend/firebase';
+import { DecodedIdToken } from 'firebase-admin/lib/auth/token-verifier';
 
 export const Auth = {
-  verify: async (request: Request) => {
-    const idToken = request.headers.get('Authorization')?.split('Bearer ')[1];
+  /**
+   * Verify the Authorization token in the request headers
+   * and return the decoded token.
+   */
+  verify: async (request: Request): Promise<DecodedIdToken> => {
+    const token = request.headers.get('Authorization')?.split('Bearer ')[1];
 
-    if (!idToken) throw new AuthenticationError('No Authorization token provided');
+    if (!token) throw new AuthenticationError('No Authorization token provided');
 
     try {
-      return await auth.verifyIdToken(idToken);
+      return await auth.verifyIdToken(token);
     } catch (error) {
       throw new AuthenticationError('Invalid Authorization token');
     }
