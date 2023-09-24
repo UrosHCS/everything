@@ -28,7 +28,6 @@ export const useConversation = () => {
 
   const ask = useCallback(
     async (e: FormEvent<HTMLFormElement>) => {
-      console.log('ask');
       e.preventDefault();
 
       if (!user) return;
@@ -61,7 +60,6 @@ export const useConversation = () => {
 
       // Push the response to the streamed message
       while (true) {
-        console.log('.');
         const { done, value } = await stream.read();
         if (done) break;
 
@@ -70,19 +68,10 @@ export const useConversation = () => {
         setStreamingMessage(prev => prev + decoded);
       }
 
-      console.log('gonna set conversation');
       // Once the stream is done, set the streamed message as the last message in the conversation
       setConversation(old => {
-        console.log('setting conversation');
         const newMessages = [...old.messages];
         newMessages[newMessages.length - 1].answer = { body: message, createdAt: new Date().toISOString() };
-        console.log({
-          old,
-          new: {
-            ...old,
-            messages: newMessages,
-          },
-        });
         return {
           ...old,
           messages: newMessages,
