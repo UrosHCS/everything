@@ -8,11 +8,14 @@ type Props = {
   children: React.ReactNode;
 };
 
-export default function Session({ children }: Props) {
+/**
+ * First client component. FirebaseSessionProvider uses useState.
+ */
+export default function RootClientComponent({ children }: Props) {
   return (
     <FirebaseSessionProvider>
       <Header />
-      <main className="flex h-full flex-col items-center overflow-y-hidden p-4">{children}</main>
+      <main className="flex h-full flex-col items-center overflow-y-hidden">{children}</main>
     </FirebaseSessionProvider>
   );
 }

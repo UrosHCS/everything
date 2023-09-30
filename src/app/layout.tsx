@@ -1,4 +1,5 @@
-import Session from './Session';
+import { ThemeProvider } from '../components/ThemeProvider';
+import RootClientComponent from './RootClientComponent';
 import './globals.css';
 import { Inter } from 'next/font/google';
 
@@ -8,12 +9,14 @@ export const metadata = {
 };
 
 const inter = Inter({ subsets: ['latin'] });
-
+// bg-gradient-to-b from-background to-background text-gray-300
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`h-screen ${inter.className}`}>
-      <body className="flex h-full flex-col bg-gradient-to-b from-purple-900 to-purple-950 text-gray-300">
-        <Session>{children}</Session>
+      <body className="flex h-full flex-col">
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <RootClientComponent>{children}</RootClientComponent>
+        </ThemeProvider>
       </body>
     </html>
   );

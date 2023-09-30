@@ -1,36 +1,37 @@
 'use client';
 
-import { NavItem } from '../NavItem';
 import ProfileImage from './ProfileImage';
+import { Button } from '@components/ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@components/ui/dropdown-menu';
 import { logout } from '@lib/firebase';
-import useDropdown from '@lib/hooks/useDropdown';
-import { User } from 'firebase/auth';
+import { useSession } from '@lib/firebase/context';
 import Link from 'next/link';
 
-type Props = {
-  user: User;
-};
-
-export default function ProfileButtonDropdown({ user }: Props) {
-  const [ref, isOpen, setIsOpen] = useDropdown();
+export default function ProfileButtonDropdown() {
+  const { user } = useSession();
 
   return (
-    <div onClick={() => setIsOpen(!isOpen)} ref={ref} className="relative">
-      <button className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-purple-300">
-        <ProfileImage user={user} />
-      </button>
-      {isOpen && (
-        <ul className="absolute right-0 mt-4 flex flex-col gap-2 rounded bg-purple-800 p-1 shadow">
-          <li>
-            <NavItem href="/profile">Profile</NavItem>
-          </li>
-          <li>
-            <button className="inline-block w-full rounded p-4 text-xl" onClick={logout}>
-              Logout
-            </button>
-          </li>
-        </ul>
-      )}
-    </div>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button className="rounded-full border-2" variant="outline" size="icon">
+          <ProfileImage user={user} />
+          <span className="sr-only">Profile</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        {user ? (
+          <>
+            <DropdownMenuItem>
+              <Link href="/profile">Profile</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
+          </>
+        ) : (
+          <DropdownMenuItem>
+            <Link href="/login">Login</Link>
+          </DropdownMenuItem>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

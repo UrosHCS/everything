@@ -39,6 +39,9 @@
       ],
       "@backend/*": [
         "./src/backend/*"
+      ],
+      "@components/*": [
+        "./src/components/*"
       ]
     }
   },
