@@ -7,6 +7,7 @@ export type Bot = {
   image: string;
   name: string;
   prompt: string;
+  slug: string;
 };
 
 /**

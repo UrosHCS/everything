@@ -1,14 +1,10 @@
 'use client';
 
-import { signInWithGoogle } from '@lib/firebase';
+import { LogInWithGoogleButton } from '@components/LogInWithGoogle';
 import { useSession } from '@lib/firebase/context';
 import { redirect } from 'next/navigation';
 
-// import { FormEvent, useState } from 'react';
-
-// function onSubmit(e: FormEvent<HTMLFormElement>) {
-//   e.preventDefault();
-// }
+// import { useState } from 'react';
 
 export default function Login() {
   // const [email, setEmail] = useState('');
@@ -26,7 +22,13 @@ export default function Login() {
     <>
       <h1 className="py-4 text-3xl font-semibold">Log in</h1>
       {/* <section className="lg:w-72">
-        <form onSubmit={onSubmit} action="/">
+        <form
+          onSubmit={e => {
+            e.preventDefault();
+            signInWithEmail(email, password);
+          }}
+          action="/"
+        >
           <label className="flex flex-col py-1" htmlFor="email">
             <span className="p-1">Email</span>
             <input
@@ -59,9 +61,7 @@ export default function Login() {
         </form>
       </section> */}
       <section>
-        <button onClick={signInWithGoogle} className="btn-ghost btn text-xl normal-case">
-          Login with google
-        </button>
+        <LogInWithGoogleButton />
       </section>
     </>
   );

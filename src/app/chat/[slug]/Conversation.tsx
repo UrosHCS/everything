@@ -3,24 +3,26 @@
 import Message from './Message';
 import { useConversation } from './useConversation';
 import { useSession } from '@lib/firebase/context';
+import { Bot } from '@lib/firebase/models';
+import { DocWithId } from '@lib/types';
 import { Fragment } from 'react';
 
-export default function Chat() {
+type Props = {
+  bot: DocWithId<Bot>;
+};
+
+export function Conversation({ bot }: Props) {
   const session = useSession();
 
-  const { conversation, question, setQuestion, ask, streamingMessage } = useConversation();
-
-  if (session.status === 'loading') return <div>Loading...</div>;
-
-  if (session.status === 'unauthenticated') return <div>Unauthenticated</div>;
+  const { conversation, ask, streamingMessage } = useConversation(bot);
 
   return (
     <section className="flex h-full w-full max-w-xl flex-col overflow-y-hidden">
-      <h2 className="py-4 text-3xl font-semibold">Druzzila</h2>
+      <h2 className="py-4 text-3xl font-semibold opacity-80">{bot.name}</h2>
 
       <div className="flex h-full flex-col overflow-y-hidden rounded-lg border border-purple-500 bg-purple-800">
         <div className="flex h-full flex-col gap-2 overflow-y-auto p-4">
-          <Message bot={true}>How may I help you, dear?</Message>
+          <Message bot={true}>How may I help you today?</Message>
           {conversation.messages.map((message, i) => {
             const isLastMessage = conversation.messages.length === i + 1;
             const answer = (isLastMessage && streamingMessage) || message.answer?.body;
@@ -41,8 +43,6 @@ export default function Chat() {
               name="question"
               id="question"
               type="text"
-              value={question}
-              onChange={e => setQuestion(e.target.value)}
             />
             <button className="absolute inset-y-0 right-0 pr-2 text-purple-950" type="submit">
               Ask

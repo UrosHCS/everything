@@ -19,17 +19,7 @@ export function Header() {
           <NavigationMenuList>
             <NavigationMenuItem>
               <Link href="/" legacyBehavior passHref>
-                <NavigationMenuLink className={cls}>EVERYTHING</NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Link href="/chat" legacyBehavior passHref>
-                <NavigationMenuLink className={cls}>Chat</NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Link href="/about" legacyBehavior passHref>
-                <NavigationMenuLink className={cls}>About</NavigationMenuLink>
+                <NavigationMenuLink className={cls}>CHAT</NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
           </NavigationMenuList>

@@ -5,7 +5,6 @@ const { serviceAccount } = serverConfig.firebaseAdmin;
 
 const app = (() => {
   if (admin.apps.length) return admin.app();
-
   return admin.initializeApp({
     credential: admin.credential.cert({
       projectId: serviceAccount.project_id,

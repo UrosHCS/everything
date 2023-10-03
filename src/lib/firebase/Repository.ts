@@ -8,8 +8,10 @@ import {
   doc,
   getDoc,
   getDocs,
+  query,
   setDoc,
   updateDoc,
+  where,
 } from 'firebase/firestore';
 
 export class Repository<T> {
@@ -19,12 +21,26 @@ export class Repository<T> {
     this.ref = collection(db, collectionName) as CollectionReference<T>;
   }
 
-  get(id: string): Promise<DocumentSnapshot<T>> {
+  getById(id: string): Promise<DocumentSnapshot<T>> {
     return getDoc(this.doc(id));
   }
 
-  all(): Promise<QuerySnapshot<T>> {
+  getAll(): Promise<QuerySnapshot<T>> {
     return getDocs(this.ref);
+  }
+
+  getWhere(key: string, value: string): Promise<QuerySnapshot<T>> {
+    return getDocs(query(this.ref, where(key, '==', value)));
+  }
+
+  async findAll(): Promise<T[]> {
+    const snapshot = await this.getAll();
+    return snapshot.docs.map(doc => doc.data());
+  }
+
+  async findById(id: string): Promise<T | undefined> {
+    const snapshot = await this.getById(id);
+    return snapshot.data();
   }
 
   async create(data: any): Promise<DocumentSnapshot<T>> {
