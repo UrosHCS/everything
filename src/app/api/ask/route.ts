@@ -80,9 +80,9 @@ async function createOpenAIResponseStream(user: DocWithId<User>, question: strin
 }
 
 function getUserPrompt(user: User): string {
-  const name = user.name ? `a person named ${user.name}` : 'a person';
+  const name = user.name ? `My name is ${user.name},` : 'I am';
   const genderPrompt = user.gender ? ` of gender ${user.gender}` : ' of unknown gender';
-  const dateOfBirth = user.dob ? ` born on ${user.dob}` : '';
+  const dateOfBirth = user.dob ? `, born on ${user.dob}` : '';
 
-  return `You are chatting with ${name}${genderPrompt}${dateOfBirth}`;
+  return `I  ${name}${genderPrompt}${dateOfBirth}`;
 }

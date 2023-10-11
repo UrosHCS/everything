@@ -21,15 +21,17 @@ export default function ProfileButtonDropdown() {
       <DropdownMenuContent align="end">
         {user ? (
           <>
-            <DropdownMenuItem>
-              <Link href="/profile">Profile</Link>
+            <Link href="/profile">
+              <DropdownMenuItem className="cursor-pointer">Profile</DropdownMenuItem>
+            </Link>
+            <DropdownMenuItem className="cursor-pointer" onClick={logout}>
+              Logout
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
           </>
         ) : (
-          <DropdownMenuItem>
-            <Link href="/login">Login</Link>
-          </DropdownMenuItem>
+          <Link href="/login">
+            <DropdownMenuItem className="cursor-pointer">Login</DropdownMenuItem>
+          </Link>
         )}
       </DropdownMenuContent>
     </DropdownMenu>

@@ -33,10 +33,9 @@ export const useConversation = (bot: DocWithId<Bot>) => {
   } satisfies UnauthenticatedConversation);
 
   const ask = useCallback(
-    async (e: FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      // @ts-expect-error maybe there's a better way
-      const question = e.target.elements.question.value;
+    async (question: string) => {
+      // e.preventDefault();
+      // const question = e.target.elements.question.value;
 
       if (!session.user) {
         if (session.status === 'loading') {
@@ -50,8 +49,7 @@ export const useConversation = (bot: DocWithId<Bot>) => {
       setIsLoading(true);
 
       // Remove the question from the input
-      // @ts-expect-error maybe there's a better way
-      e.target.elements.question.value = '';
+      // e.target.elements.question.value = '';
 
       // And add the question to the conversation
       setConversation(old => {

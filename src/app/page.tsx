@@ -26,10 +26,10 @@ function GiftedOne({ bot }: Props) {
         <a href={`/chat/${bot.slug}`}>
           <Image src={bot.image} width={400} height={400} alt={bot.name} priority={true} />
           <div className="absolute inset-0 flex flex-col">
-            <div className="flex flex-grow items-center p-2 text-center leading-relaxed opacity-30">
+            <div className="flex flex-grow items-center p-2 text-center leading-relaxed text-slate-50 opacity-30">
               {bot.description}
             </div>
-            <div className="bg-black p-2 text-xl font-semibold text-red-200 opacity-50">{`-> ${bot.name}`}</div>
+            <div className="bg-slate-50 p-2 text-xl font-semibold text-slate-800 opacity-50 dark:bg-black dark:text-red-200">{`-> ${bot.name}`}</div>
           </div>
         </a>
       </Card>

@@ -6,19 +6,13 @@ type Props = {
 export default function Message({ children, bot }: Props) {
   if (bot) {
     return (
-      <div className="answer flex justify-start text-purple-950">
-        <div className="max-w-[80%] rounded-lg border border-purple-500 bg-gradient-to-r from-fuchsia-500 to-purple-500 p-2">
-          {children}
-        </div>
-      </div>
+      <div className="flex w-max max-w-[75%] flex-col gap-2 rounded-lg bg-muted px-3 py-2 text-sm">{children}</div>
     );
   }
 
   return (
-    <div className="question flex justify-end text-purple-950">
-      <div className="max-w-[80%] rounded-lg border border-purple-500 bg-gradient-to-r from-purple-500 to-fuchsia-400 p-2">
-        {children}
-      </div>
+    <div className="ml-auto flex w-max max-w-[75%] flex-col gap-2 rounded-lg bg-primary px-3 py-2 text-sm text-primary-foreground">
+      {children}
     </div>
   );
 }
