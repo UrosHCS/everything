@@ -1,6 +1,6 @@
 import { HTTPRequestError } from './errors/HTTPRequestError';
 
-export default function catchError(
+export function catchError(
   handler: (request: Request) => Response | Promise<Response>,
 ): (request: Request) => Promise<Response> {
   return async (request: Request): Promise<Response> => {

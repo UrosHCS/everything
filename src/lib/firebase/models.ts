@@ -4,6 +4,7 @@
 export type Bot = {
   description: string;
   enabled: boolean;
+  initialMessage: string;
   image: string;
   name: string;
   prompt: string;
@@ -33,6 +34,7 @@ export type Conversation = {
   botId: string;
   createdAt: string;
   messages: QnA[];
+  systemPrompt: string;
   userId: string;
 };
 

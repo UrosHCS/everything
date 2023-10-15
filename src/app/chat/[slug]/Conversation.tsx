@@ -2,26 +2,38 @@
 
 import { ChatInput } from './ChatInput';
 import Message from './Message';
-import { useConversation } from './useConversation';
+import { useChat } from './useChat';
 import { Card } from '@components/ui/card';
-import { Bot } from '@lib/firebase/models';
+import { Bot, Conversation } from '@lib/firebase/models';
 import { DocWithId } from '@lib/types';
+import Image from 'next/image';
 import { Fragment } from 'react';
 
 type Props = {
   bot: DocWithId<Bot>;
+  initialConversation?: DocWithId<Conversation>;
 };
 
-export function Conversation({ bot }: Props) {
-  const { conversation, ask, streamingMessage, isLoading } = useConversation(bot);
+export function ChatConversation({ bot, initialConversation }: Props) {
+  const { conversation, ask, streamingMessage, isLoading } = useChat(bot, initialConversation);
 
   return (
     <section className="flex h-full w-full max-w-xl flex-col overflow-y-hidden">
-      <h2 className="py-4 text-3xl font-semibold opacity-80">{bot.name}</h2>
+      <h2 className="flex gap-4 py-4 text-3xl font-semibold opacity-80">
+        <Image
+          className="rounded-full border-2 border-slate-700"
+          src={bot.image}
+          width={36}
+          height={36}
+          alt={bot.name}
+          priority={true}
+        />
+        {bot.name}
+      </h2>
 
-      <Card className="flex h-full flex-col overflow-y-hidden">
+      <Card className="mb-2 flex h-full flex-col overflow-y-hidden">
         <div className="flex h-full flex-col gap-2 overflow-y-auto p-4">
-          <Message bot={true}>How may I help you today?</Message>
+          <Message bot={true}>{bot.initialMessage}</Message>
           {conversation.messages.map((message, i) => {
             const isLastMessage = conversation.messages.length === i + 1;
             const answer = (isLastMessage && streamingMessage) || message.answer?.body;

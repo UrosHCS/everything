@@ -17,4 +17,6 @@ const app = (() => {
 const firestoreInstance = admin.firestore(app);
 const auth = admin.auth(app);
 
+export const FieldValue = admin.firestore.FieldValue;
+
 export { app, auth, firestoreInstance };

@@ -1,12 +1,12 @@
-import { firestoreInstance } from '../firebase';
+import { FieldValue, firestoreInstance } from '../firebase';
 import { CollectionReference, DocumentSnapshot, QuerySnapshot, WriteResult } from '@google-cloud/firestore';
 import { DocWithId } from '@lib/types';
 
 export class Repository<T> {
-  private collectionRef: CollectionReference<T>;
+  public ref: CollectionReference<T>;
 
   constructor(public collectionName: string) {
-    this.collectionRef = firestoreInstance.collection(collectionName) as CollectionReference<T>;
+    this.ref = firestoreInstance.collection(collectionName) as CollectionReference<T>;
   }
 
   // Find methods that return just the data, with added id field
@@ -20,8 +20,25 @@ export class Repository<T> {
     return this.docToData(await this.getById(id));
   }
 
+  async findOneWhere(where: Partial<DocWithId<T>>): Promise<DocWithId<T> | undefined> {
+    const query = this.ref.limit(1);
+
+    for (const [key, value] of Object.entries(where)) {
+      query.where(key, '==', value);
+    }
+
+    const snapshot = await query.get();
+    const first = snapshot.docs[0];
+
+    if (!first) {
+      return;
+    }
+
+    return this.docToData(first);
+  }
+
   async findOneBy(key: string, value: string): Promise<DocWithId<T> | undefined> {
-    const snapshot = await this.collectionRef.where(key, '==', value).limit(1).get();
+    const snapshot = await this.ref.where(key, '==', value).limit(1).get();
     const first = snapshot.docs[0];
 
     if (!first) {
@@ -42,23 +59,39 @@ export class Repository<T> {
   }
 
   private getById(id: string): Promise<DocumentSnapshot<T>> {
-    return this.collectionRef.doc(id).get();
+    return this.ref.doc(id).get();
   }
 
   private getAll(): Promise<QuerySnapshot<T>> {
-    return this.collectionRef.get();
+    return this.ref.get();
   }
 
   // Mutations
 
-  async create(data: T): Promise<DocumentSnapshot<T>> {
-    const docRef = await this.collectionRef.add(data);
-    return docRef.get();
+  async create(data: T): Promise<DocWithId<T>> {
+    const docRef = await this.ref.add(data);
+    const doc = await docRef.get();
+
+    if (!doc.exists) {
+      throw new Error('Document does not exist, even though it was just created!');
+    }
+    return this.docToData(doc)!;
   }
 
   async update(id: string, data: Partial<T>): Promise<void> {
     // @ts-expect-error firestore type is anoying
-    await this.collectionRef.doc(id).update(data);
+    await this.ref.doc(id).update(data);
+  }
+
+  async addToArray<K extends keyof T>(
+    id: string,
+    field: K,
+    data: T[K] extends Array<infer E> ? E : never,
+  ): Promise<void> {
+    // @ts-expect-error firestore type is anoying
+    await this.ref.doc(id).update({
+      [field]: FieldValue.arrayUnion(data),
+    });
   }
 
   async updateAndGet(id: string, data: Partial<T>): Promise<DocumentSnapshot<T>> {
@@ -67,6 +100,6 @@ export class Repository<T> {
   }
 
   delete(id: string): Promise<WriteResult> {
-    return this.collectionRef.doc(id).delete();
+    return this.ref.doc(id).delete();
   }
 }

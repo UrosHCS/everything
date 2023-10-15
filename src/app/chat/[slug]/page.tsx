@@ -1,4 +1,4 @@
-import { Conversation } from './Conversation';
+import { ChatConversation } from './Conversation';
 import { repos } from '@backend/repositories/repos';
 import { Bot } from '@lib/firebase/models';
 import { DocWithId } from '@lib/types';
@@ -13,7 +13,7 @@ export default async function Chat({ params }: Props) {
 
   if (!bot) redirect('/');
 
-  return <Conversation bot={bot} />;
+  return <ChatConversation bot={bot} />;
 }
 
 async function getBotBySlug(slug: string): Promise<DocWithId<Bot> | undefined> {

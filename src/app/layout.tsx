@@ -9,10 +9,10 @@ export const metadata = {
 };
 
 const inter = Inter({ subsets: ['latin'] });
-// bg-gradient-to-b from-background to-background text-gray-300
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`h-screen ${inter.className}`}>
+    <html lang="en" className={`h-[100dvh] ${inter.className}`}>
       <body className="flex h-full flex-col">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <RootClientComponent>{children}</RootClientComponent>
