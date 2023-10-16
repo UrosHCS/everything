@@ -16,16 +16,19 @@ export class Repository<T> {
     return snapshot.docs.map(doc => this.docToData(doc)!);
   }
 
+  async findAllWhere(where: Partial<DocWithId<T>>): Promise<DocWithId<T>[]> {
+    const query = this.whereObjectToQuery(where);
+
+    const snapshot = await query.get();
+    return snapshot.docs.map(doc => this.docToData(doc)!);
+  }
+
   async findById(id: string): Promise<DocWithId<T> | undefined> {
     return this.docToData(await this.getById(id));
   }
 
   async findOneWhere(where: Partial<DocWithId<T>>): Promise<DocWithId<T> | undefined> {
-    const query = this.ref.limit(1);
-
-    for (const [key, value] of Object.entries(where)) {
-      query.where(key, '==', value);
-    }
+    const query = this.whereObjectToQuery(where);
 
     const snapshot = await query.get();
     const first = snapshot.docs[0];
@@ -46,6 +49,16 @@ export class Repository<T> {
     }
 
     return this.docToData(first);
+  }
+
+  private whereObjectToQuery(where: Partial<DocWithId<T>>) {
+    const query = this.ref;
+
+    for (const [key, value] of Object.entries(where)) {
+      query.where(key, '==', value);
+    }
+
+    return query;
   }
 
   private docToData(doc: DocumentSnapshot<T>): (T & { id: string }) | undefined {

@@ -1,4 +1,5 @@
 import { StreamHandler } from './StreamHandler';
+import { getConversationUrl } from './helpers';
 import { ClientConversation, useConversation } from './useConversation';
 import { signInWithGoogle } from '@lib/firebase';
 import { useSession } from '@lib/firebase/context';
@@ -61,7 +62,7 @@ export const useChat = (bot: DocWithId<Bot>, initialConversation?: ClientConvers
     }
 
     if (isNewConversation) {
-      router.replace(`/chat/${bot.slug}/conversation/${conversationId}`);
+      router.replace(getConversationUrl(bot, { id: conversationId }));
     }
   }
 

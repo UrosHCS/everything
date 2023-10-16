@@ -1,23 +1,17 @@
-import { ChatConversation } from './Conversation';
-import { repos } from '@backend/repositories/repos';
-import { Bot } from '@lib/firebase/models';
-import { DocWithId } from '@lib/types';
+import { ChatConversation } from './ChatConversation';
+import { getBotBySlug, getConversationPreviewsForBot } from './server';
 import { redirect } from 'next/navigation';
 
 type Props = {
   params: { slug: string };
 };
 
-export default async function Chat({ params }: Props) {
+export default async function ChatBot({ params }: Props) {
   const bot = await getBotBySlug(params.slug);
 
   if (!bot) redirect('/');
 
-  return <ChatConversation bot={bot} />;
-}
+  const conversationPreviews = await getConversationPreviewsForBot(bot);
 
-async function getBotBySlug(slug: string): Promise<DocWithId<Bot> | undefined> {
-  if (!slug) return;
-
-  return repos.bots.findOneBy('slug', slug);
+  return <ChatConversation bot={bot} conversationPreviews={conversationPreviews} />;
 }

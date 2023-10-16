@@ -1,7 +1,9 @@
 'use client';
 
 import { ChatInput } from './ChatInput';
+import { ConversationSidebar } from './ConversationSidebar';
 import Message from './Message';
+import { ConversationPreview } from './server';
 import { useChat } from './useChat';
 import { Card } from '@components/ui/card';
 import { Bot, Conversation } from '@lib/firebase/models';
@@ -12,22 +14,25 @@ import { Fragment } from 'react';
 type Props = {
   bot: DocWithId<Bot>;
   initialConversation?: DocWithId<Conversation>;
+  conversationPreviews: ConversationPreview[];
 };
 
-export function ChatConversation({ bot, initialConversation }: Props) {
+export function ChatConversation({ bot, initialConversation, conversationPreviews }: Props) {
   const { conversation, ask, streamingMessage, isLoading } = useChat(bot, initialConversation);
 
   return (
     <section className="flex h-full w-full max-w-xl flex-col overflow-y-hidden">
       <h2 className="flex gap-4 py-4 text-3xl font-semibold opacity-80">
-        <Image
-          className="rounded-full border-2 border-slate-700"
-          src={bot.image}
-          width={36}
-          height={36}
-          alt={bot.name}
-          priority={true}
-        />
+        <ConversationSidebar conversationPreviews={conversationPreviews}>
+          <Image
+            className="rounded-full border-2 border-slate-700"
+            src={bot.image}
+            width={36}
+            height={36}
+            alt={bot.name}
+            priority={true}
+          />
+        </ConversationSidebar>
         {bot.name}
       </h2>
 

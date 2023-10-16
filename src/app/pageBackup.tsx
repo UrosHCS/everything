@@ -1,5 +1,4 @@
 import { Card } from '@components/ui/card';
-import { ScrollArea } from '@components/ui/scroll-area';
 import Image from 'next/image';
 
 function GiftedOne({ name, src }: { name: string; src: string }) {
