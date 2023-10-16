@@ -118,11 +118,11 @@ async function createOpenAIResponseStream(
         console.error(error);
         controller.error(error);
       }
-      console.log('Closing the stream from OpenAI');
       controller.close();
     },
     async cancel() {
-      stream.controller.abort();
+      // We don't want to abort the stream, because we want to keep the conversation in the database.
+      // stream.controller.abort();
     },
   });
 }
@@ -163,8 +163,6 @@ function addQuestionAndAnswerToConversation(
   question: string,
   answer: string,
 ): Promise<void> {
-  console.log('Adding question and answer to conversation', conversation.id, JSON.stringify({ question, answer }));
-
   return repos.conversations.addToArray(conversation.id, 'messages', {
     question: { body: question, createdAt: conversation.createdAt },
     answer: { body: answer, createdAt: new Date().toISOString() },
