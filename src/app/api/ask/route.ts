@@ -15,6 +15,11 @@ const openai = new OpenAI({
   fetch: fetch,
 });
 
+/**
+ * This should make the route work on Edge.
+ */
+export const runtime = 'edge';
+
 export const POST = catchError(handler);
 
 async function handler(request: Request) {
