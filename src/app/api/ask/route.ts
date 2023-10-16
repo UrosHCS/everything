@@ -114,8 +114,11 @@ async function createOpenAIResponseStream(
         // So that when the client redirects to the conversation page, the question and answer are already there.
         await addQuestionAndAnswerToConversation(conversation, question, answer);
       } catch (error) {
+        console.error('There was an erro while streaming the response from OpenAI');
+        console.error(error);
         controller.error(error);
       }
+      console.log('Closing the stream from OpenAI');
       controller.close();
     },
     async cancel() {
@@ -160,6 +163,8 @@ function addQuestionAndAnswerToConversation(
   question: string,
   answer: string,
 ): Promise<void> {
+  console.log('Adding question and answer to conversation', conversation.id, JSON.stringify({ question, answer }));
+
   return repos.conversations.addToArray(conversation.id, 'messages', {
     question: { body: question, createdAt: conversation.createdAt },
     answer: { body: answer, createdAt: new Date().toISOString() },

@@ -28,7 +28,7 @@ export async function getConversationPreviewsForBot(bot: DocWithId<Bot>): Promis
 function getName(conversation: any): string {
   const qna = conversation.get('messages') as QnA[];
 
-  if (!qna.length) return '';
+  if (!qna.length) return 'Empty conversation';
 
-  return qna[0].question.body;
+  return qna[0].question.body || 'Empty conversation';
 }
