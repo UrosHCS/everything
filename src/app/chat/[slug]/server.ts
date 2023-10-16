@@ -20,7 +20,15 @@ export async function getConversationPreviewsForBot(bot: DocWithId<Bot>): Promis
 
   return res.docs.map(conversation => ({
     id: conversation.id,
-    name: (conversation.get('messages') as QnA[])[0].question.body,
+    name: getName(conversation),
     url: getConversationUrl(bot, conversation),
   }));
+}
+
+function getName(conversation: any): string {
+  const qna = conversation.get('messages') as QnA[];
+
+  if (!qna.length) return '';
+
+  return qna[0].question.body;
 }
