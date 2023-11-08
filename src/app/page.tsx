@@ -3,6 +3,15 @@ import { Card } from '@components/ui/card';
 import { Bot } from '@lib/firebase/models';
 import Image from 'next/image';
 
+export default function Home() {
+  return (
+    <section className="flex w-full flex-col items-center overflow-y-auto">
+      <h1 className="py-4 text-center text-2xl font-semibold">Chat with a gifted one</h1>
+      <Bots />
+    </section>
+  );
+}
+
 async function Bots() {
   const bots = await repos.bots.findAll();
 
@@ -34,14 +43,5 @@ function GiftedOne({ bot }: Props) {
         </a>
       </Card>
     </li>
-  );
-}
-
-export default function Home() {
-  return (
-    <section className="flex w-full flex-col items-center overflow-y-auto">
-      <h1 className="py-4 text-center text-2xl font-semibold">Chat with a gifted one</h1>
-      <Bots />
-    </section>
   );
 }

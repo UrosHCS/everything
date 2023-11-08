@@ -9,12 +9,11 @@ import Link from 'next/link';
 
 export default function ProfileButtonDropdown() {
   const { user } = useSession();
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button className="rounded-full border-2" variant="outline" size="icon">
-          <ProfileImage user={user} />
+          <ProfileImage />
           <span className="sr-only">Profile</span>
         </Button>
       </DropdownMenuTrigger>

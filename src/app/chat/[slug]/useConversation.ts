@@ -10,6 +10,9 @@ type Action =
   | {
       type: 'addAnswer';
       payload: string;
+    }
+  | {
+      type: 'undoQuestion';
     };
 
 export type ClientConversation = Pick<DocWithId<Conversation>, 'id' | 'createdAt' | 'messages'>;
@@ -33,6 +36,11 @@ function reducer(state: ConversationState, action: Action): ConversationState {
         createdAt: state.createdAt ?? now,
         messages: [...state.messages, message],
       };
+    case 'undoQuestion':
+      return {
+        ...state,
+        messages: state.messages.slice(0, -1),
+      };
     case 'addAnswer':
       const newMessages = [...state.messages];
       newMessages[newMessages.length - 1].answer = { body: action.payload, createdAt: now };
@@ -49,6 +57,7 @@ export function useConversation(initialConversation?: ConversationState) {
   return {
     conversation,
     addQuestion: (question: string) => dispatch({ type: 'addQuestion', payload: question }),
+    undoQuestion: () => dispatch({ type: 'undoQuestion' }),
     addAnswer: (answer: string) => dispatch({ type: 'addAnswer', payload: answer }),
   };
 }

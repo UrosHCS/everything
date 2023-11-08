@@ -1,11 +1,13 @@
-import { User } from 'firebase/auth';
+import { useSession } from '@lib/firebase/context';
 import Image from 'next/image';
 
-type Props = {
-  user: User | null;
-};
+export default function ProfileImage() {
+  const { user, status } = useSession();
 
-export default function ProfileImage({ user }: Props) {
+  if (status === 'loading') {
+    return null;
+  }
+
   if (!user) {
     return (
       <svg

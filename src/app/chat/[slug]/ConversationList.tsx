@@ -21,8 +21,8 @@ export function ConversationList({ conversationPreviews }: Props) {
 
   return (
     <ScrollArea className="my-4 rounded-md border">
-      <div className="p-4">
-        {conversationPreviews.map(conversation => (
+      <div className="px-4">
+        {conversationPreviews.map((conversation, index) => (
           <Fragment key={conversation.id}>
             <div className="w-80 overflow-x-hidden overflow-ellipsis whitespace-nowrap py-2 text-sm lg:w-72">
               <Link className="w-full py-2" href={conversation.url}>
@@ -30,7 +30,7 @@ export function ConversationList({ conversationPreviews }: Props) {
                 {conversation.name}
               </Link>
             </div>
-            <Separator />
+            {index !== conversationPreviews.length - 1 && <Separator />}
           </Fragment>
         ))}
       </div>

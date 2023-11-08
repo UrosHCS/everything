@@ -24,7 +24,7 @@ export function ProfileData() {
   return (
     <div className="flex flex-col items-center gap-2">
       <div className="flex items-center gap-2">
-        <ProfileImage user={user} />
+        <ProfileImage />
         <p>{user.displayName}</p>
       </div>
       <div className="flex items-center gap-2">

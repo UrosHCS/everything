@@ -5,11 +5,13 @@ import { ConversationSidebar } from './ConversationSidebar';
 import Message from './Message';
 import { ConversationPreview } from './server';
 import { useChat } from './useChat';
+import { Button } from '@components/ui/button';
 import { Card } from '@components/ui/card';
 import { Bot, Conversation } from '@lib/firebase/models';
 import { DocWithId } from '@lib/types';
 import Image from 'next/image';
 import { Fragment } from 'react';
+import { MoreHorizontal } from 'react-feather';
 
 type Props = {
   bot: DocWithId<Bot>;
@@ -22,17 +24,20 @@ export function ChatConversation({ bot, initialConversation, conversationPreview
 
   return (
     <section className="flex h-full w-full max-w-xl flex-col overflow-y-hidden">
-      <h2 className="flex gap-4 py-4 text-3xl font-semibold opacity-80">
+      <h2 className="flex gap-4 px-2 py-4 text-3xl font-semibold opacity-80">
         <ConversationSidebar conversationPreviews={conversationPreviews}>
-          <Image
-            className="rounded-full border-2 border-slate-700"
-            src={bot.image}
-            width={36}
-            height={36}
-            alt={bot.name}
-            priority={true}
-          />
+          <Button className="rounded" variant="outline" size="icon">
+            <MoreHorizontal />
+          </Button>
         </ConversationSidebar>
+        <Image
+          className="rounded-full border-2 border-slate-700"
+          src={bot.image}
+          width={36}
+          height={36}
+          alt={bot.name}
+          priority={true}
+        />
         {bot.name}
       </h2>
 

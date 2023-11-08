@@ -1,6 +1,7 @@
 import { ThemeProvider } from '../components/ThemeProvider';
 import RootClientComponent from './RootClientComponent';
 import './globals.css';
+import { Toaster } from '@components/ui/toaster';
 import { Inter } from 'next/font/google';
 
 export const metadata = {
@@ -17,6 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <RootClientComponent>{children}</RootClientComponent>
         </ThemeProvider>
+        <Toaster />
       </body>
     </html>
   );
