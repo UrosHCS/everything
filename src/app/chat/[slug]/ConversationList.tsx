@@ -11,6 +11,14 @@ type Props = {
 };
 
 export function ConversationList({ conversationPreviews }: Props) {
+  if (conversationPreviews.length === 0) {
+    return (
+      <div className="p-4">
+        <p className="text-center opacity-50">No conversations yet.</p>
+      </div>
+    );
+  }
+
   return (
     <ScrollArea className="my-4 rounded-md border">
       <div className="p-4">

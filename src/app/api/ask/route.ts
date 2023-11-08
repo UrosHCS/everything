@@ -1,11 +1,12 @@
 import { Auth } from '../Auth';
 import { catchError } from '../catchError';
+import { OpenAIStreamError } from '../errors/OpenAIStreamError';
 import { modelNotFoundResponse } from './modelNotFoundResponse';
 import { repos } from '@backend/repositories/repos';
 import { serverConfig } from '@backend/serverConfig';
 import { Bot, Conversation, User } from '@lib/firebase/models';
 import { DocWithId } from '@lib/types';
-import { OpenAI } from 'openai';
+import { OpenAI, OpenAIError } from 'openai';
 import { ChatCompletionMessageParam } from 'openai/resources/chat';
 
 const MAX_TOKENS = 150;
@@ -74,6 +75,32 @@ function getSystemPrompt(user: User, bot: Bot): string {
   return `${bot.prompt} Your answers should have max ${MAX_TOKENS} tokens. ${getUserPrompt(user)}`;
 }
 
+async function openStreamWithOpenAI(
+  user: DocWithId<User>,
+  existingOrNewConversation: DocWithId<Conversation> | Conversation,
+  question: string,
+) {
+  const messages = getOpenaiMessages(existingOrNewConversation);
+
+  try {
+    return openai.chat.completions.create({
+      model: 'gpt-3.5-turbo',
+      messages: [
+        { role: 'system', content: existingOrNewConversation.systemPrompt },
+        ...messages,
+        { role: 'user', content: question },
+      ],
+      stream: true,
+      user: user.id,
+      max_tokens: MAX_TOKENS,
+    });
+  } catch (error) {
+    console.error('There was an error while opening the stream with OpenAI');
+    console.error(error);
+    throw new OpenAIStreamError('There was an error while opening the stream with OpenAI');
+  }
+}
+
 async function createOpenAIResponseStream(
   user: DocWithId<User>,
   /**
@@ -83,24 +110,11 @@ async function createOpenAIResponseStream(
   existingOrNewConversation: DocWithId<Conversation> | Conversation,
   question: string,
 ) {
-  const messages = getOpenaiMessages(existingOrNewConversation);
+  // First, open a stream with OpenAI
+  const stream = await openStreamWithOpenAI(user, existingOrNewConversation, question);
 
-  const streamPromise = openai.chat.completions.create({
-    model: 'gpt-3.5-turbo',
-    messages: [
-      { role: 'system', content: existingOrNewConversation.systemPrompt },
-      ...messages,
-      { role: 'user', content: question },
-    ],
-    stream: true,
-    user: user.id,
-    max_tokens: MAX_TOKENS,
-  });
-
-  const [stream, conversation] = await Promise.all([
-    streamPromise,
-    createNewConversationIfNeeded(existingOrNewConversation),
-  ]);
+  // Only if it succeeds, create a conversation.
+  const conversation = await createNewConversationIfNeeded(existingOrNewConversation);
 
   return new ReadableStream({
     async start(controller) {

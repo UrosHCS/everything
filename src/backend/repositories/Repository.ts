@@ -1,5 +1,12 @@
 import { FieldValue, firestoreInstance } from '../firebase';
-import { CollectionReference, DocumentSnapshot, QuerySnapshot, WriteResult } from '@google-cloud/firestore';
+import {
+  CollectionReference,
+  DocumentSnapshot,
+  Filter,
+  Query,
+  QuerySnapshot,
+  WriteResult,
+} from '@google-cloud/firestore';
 import { DocWithId } from '@lib/types';
 
 export class Repository<T> {
@@ -51,11 +58,11 @@ export class Repository<T> {
     return this.docToData(first);
   }
 
-  private whereObjectToQuery(where: Partial<DocWithId<T>>) {
-    const query = this.ref;
+  private whereObjectToQuery(where: Partial<DocWithId<T>>): Query<T> {
+    let query = this.ref as Query<T>;
 
     for (const [key, value] of Object.entries(where)) {
-      query.where(key, '==', value);
+      query = query.where(key, '==', value);
     }
 
     return query;
