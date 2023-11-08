@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export const useChat = (bot: DocWithId<Bot>, initialConversation?: ClientConversation) => {
-  const session = useSession();
+  const { user } = useSession();
   const router = useRouter();
   const { toast } = useToast();
 
@@ -29,12 +29,7 @@ export const useChat = (bot: DocWithId<Bot>, initialConversation?: ClientConvers
   const { conversation, addQuestion, undoQuestion, addAnswer } = useConversation(initialConversation);
 
   async function ask(question: string): Promise<void> {
-    if (!session.user) {
-      if (session.status === 'loading') {
-        return;
-      }
-
-      signInWithGoogle();
+    if (!user) {
       return;
     }
 
@@ -42,7 +37,7 @@ export const useChat = (bot: DocWithId<Bot>, initialConversation?: ClientConvers
 
     addQuestion(question);
 
-    const result = await getResponseStream(bot, session.user, question, initialConversation?.id);
+    const result = await getResponseStream(bot, user, question, initialConversation?.id);
 
     if (isErr(result)) {
       toast({

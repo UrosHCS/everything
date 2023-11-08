@@ -2,6 +2,8 @@ import { Button } from '@components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@components/ui/form';
 import { Input } from '@components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { signInWithGoogle } from '@lib/firebase';
+import { useSession } from '@lib/firebase/context';
 import { Send } from 'react-feather';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -25,6 +27,7 @@ const FormSchema = z.object({
 type FormData = z.infer<typeof FormSchema>;
 
 export function ChatInput({ ask, shouldDisable }: Props) {
+  const session = useSession();
   const form = useForm<FormData>({
     defaultValues: {
       question: '',
@@ -33,6 +36,15 @@ export function ChatInput({ ask, shouldDisable }: Props) {
   });
 
   function onSubmit(data: FormData) {
+    if (!session.user) {
+      if (session.status === 'loading') {
+        return;
+      }
+
+      signInWithGoogle();
+      return;
+    }
+
     form.reset();
     ask(data.question);
   }
