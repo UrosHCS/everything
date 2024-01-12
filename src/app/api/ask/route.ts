@@ -47,13 +47,23 @@ async function handler(request: Request) {
     return modelNotFoundResponse('The gifted one', slug);
   }
 
-  if (!user) {
-    return modelNotFoundResponse('User', decodedToken.sub);
+  // if (!user) {
+    // return modelNotFoundResponse('User', decodedToken.sub);
+  // }
+
+  // Quickest, stupidest solution
+  const userOrDefault: DocWithId<User> = user ?? {
+    id: 'temp',
+    name: 'John',
+    gender: 'male',
+    dob: '2000-10-20',
+    image: '',
+    createdAt: '2024-01-12',
   }
 
-  const newConversation = makeNewConversation(user, bot);
+  const newConversation = makeNewConversation(userOrDefault, bot);
 
-  const openaiStream = await createOpenAIResponseStream(user, conversation ?? newConversation, question);
+  const openaiStream = await createOpenAIResponseStream(userOrDefault, conversation ?? newConversation, question);
 
   return new Response(openaiStream, {
     status: 200,
