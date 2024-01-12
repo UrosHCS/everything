@@ -48,7 +48,7 @@ async function handler(request: Request) {
   }
 
   // if (!user) {
-    // return modelNotFoundResponse('User', decodedToken.sub);
+  // return modelNotFoundResponse('User', decodedToken.sub);
   // }
 
   // Quickest, stupidest solution
@@ -59,7 +59,7 @@ async function handler(request: Request) {
     dob: '2000-10-20',
     image: '',
     createdAt: '2024-01-12',
-  }
+  };
 
   const newConversation = makeNewConversation(userOrDefault, bot);
 
