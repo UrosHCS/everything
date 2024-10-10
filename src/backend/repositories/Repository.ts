@@ -1,12 +1,5 @@
 import { FieldValue, firestoreInstance } from '../firebase';
-import {
-  CollectionReference,
-  DocumentSnapshot,
-  Filter,
-  Query,
-  QuerySnapshot,
-  WriteResult,
-} from '@google-cloud/firestore';
+import { CollectionReference, DocumentSnapshot, Query, QuerySnapshot, WriteResult } from '@google-cloud/firestore';
 import { DocWithId } from '@lib/types';
 
 export class Repository<T> {
@@ -36,26 +29,18 @@ export class Repository<T> {
 
   async findOneWhere(where: Partial<DocWithId<T>>): Promise<DocWithId<T> | undefined> {
     const query = this.whereObjectToQuery(where);
-
     const snapshot = await query.get();
-    const first = snapshot.docs[0];
+    return this.takeFirst(snapshot);
+  }
 
-    if (!first) {
-      return;
-    }
-
-    return this.docToData(first);
+  async findOne(): Promise<DocWithId<T> | undefined> {
+    const snapshot = await this.ref.limit(1).get();
+    return this.takeFirst(snapshot);
   }
 
   async findOneBy(key: string, value: string): Promise<DocWithId<T> | undefined> {
     const snapshot = await this.ref.where(key, '==', value).limit(1).get();
-    const first = snapshot.docs[0];
-
-    if (!first) {
-      return;
-    }
-
-    return this.docToData(first);
+    return this.takeFirst(snapshot);
   }
 
   private whereObjectToQuery(where: Partial<DocWithId<T>>): Query<T> {
@@ -76,6 +61,16 @@ export class Repository<T> {
     }
 
     return { ...data, id: doc.id };
+  }
+
+  private takeFirst(snapshot: QuerySnapshot<T>): DocWithId<T> | undefined {
+    const first = snapshot.docs[0];
+
+    if (!first) {
+      return;
+    }
+
+    return this.docToData(first);
   }
 
   private getById(id: string): Promise<DocumentSnapshot<T>> {

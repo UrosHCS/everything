@@ -1,3 +1,5 @@
+import { Timestamp } from 'firebase/firestore';
+
 /**
  * AI Bot that has a personality and can converse with users.
  */
@@ -43,7 +45,7 @@ export type Conversation = {
  */
 export type User = {
   name: string;
-  dob: string;
+  dob: Timestamp;
   gender: string;
   image: string;
   createdAt: string;

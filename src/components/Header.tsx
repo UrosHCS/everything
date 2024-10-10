@@ -22,6 +22,11 @@ export function Header() {
                 <NavigationMenuLink className={cls}>CHAT</NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Link href="/about" legacyBehavior passHref>
+                <NavigationMenuLink className={cls}>ABOUT</NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
           </NavigationMenuList>
           <NavigationMenuList>
             <NavigationMenuItem>

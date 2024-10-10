@@ -171,12 +171,11 @@ function getOpenaiMessages(conversation: DocWithId<Conversation> | Conversation)
 }
 
 function getUserPrompt(user: User): string {
-  return '';
-  // const gender = user.gender || 'person';
-  // const name = user.name ? ` named ${user.name}` : '';
-  // const dateOfBirth = user.dob ? `, born on ${user.dob}` : '';
+  const gender = user.gender || 'person';
+  const name = user.name ? ` named ${user.name}` : '';
+  const dateOfBirth = user.dob ? `, born on ${user.dob.toDate().toDateString()}` : '';
 
-  // return `You are talking to a ${gender}${name}${dateOfBirth}.`;
+  return `You are talking to a ${gender}${name}${dateOfBirth}.`;
 }
 
 async function createNewConversationIfNeeded(
