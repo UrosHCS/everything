@@ -6,7 +6,8 @@ import { repos } from '@backend/repositories/repos';
 import { serverConfig } from '@backend/serverConfig';
 import { Bot, Conversation, User } from '@lib/firebase/models';
 import { DocWithId } from '@lib/types';
-import { OpenAI, OpenAIError } from 'openai';
+import { Timestamp } from 'firebase/firestore';
+import { OpenAI } from 'openai';
 import { ChatCompletionMessageParam } from 'openai/resources/chat';
 
 const MAX_TOKENS = 150;
@@ -56,7 +57,7 @@ async function handler(request: Request) {
     id: 'temp',
     name: 'John',
     gender: 'male',
-    dob: '2000-10-20',
+    dob: Timestamp.fromDate(new Date('2000-10-20')),
     image: '',
     createdAt: '2024-01-12',
   };
