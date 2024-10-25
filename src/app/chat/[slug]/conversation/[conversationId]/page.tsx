@@ -1,7 +1,7 @@
 import { ChatConversation } from '../../ChatConversation';
 import { getBotBySlug, getConversationPreviewsForBot } from '../../server';
 import { repos } from '@backend/repositories/repos';
-import { Bot, Conversation } from '@lib/firebase/models';
+import { Conversation } from '@lib/firebase/models';
 import { DocWithId } from '@lib/types';
 import { redirect } from 'next/navigation';
 

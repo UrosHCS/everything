@@ -1,5 +1,4 @@
 import { HTTPRequestError } from './errors/HTTPRequestError';
-import { OpenAIStreamError } from './errors/OpenAIStreamError';
 
 export function catchError(
   handler: (request: Request) => Response | Promise<Response>,

@@ -1,7 +1,6 @@
 import { ConversationPreview } from './server';
 import { ScrollArea } from '@components/ui/scroll-area';
 import { Separator } from '@components/ui/separator';
-import { Bot } from '@lib/firebase/models';
 import Link from 'next/link';
 import { Fragment } from 'react';
 import { MessageSquare } from 'react-feather';

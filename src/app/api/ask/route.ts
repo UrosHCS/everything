@@ -106,7 +106,7 @@ async function* openMockStream(user: DocWithId<User>) {
   }
 }
 
-async function openStreamWithOpenAI(
+export async function openStreamWithOpenAI(
   user: DocWithId<User>,
   existingOrNewConversation: DocWithId<Conversation> | Conversation,
   question: string,

@@ -19,7 +19,7 @@ export class StreamHandler {
   async read(): Promise<StreamData> {
     try {
       return await this.readOrThrow();
-    } catch (errror: unknown) {
+    } catch {
       return {
         message: "Sorry, I can't give you an answer right now. My brain is fried. Hopefully someone will fix it soon.",
         conversationId: '',

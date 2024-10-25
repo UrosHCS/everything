@@ -2,7 +2,6 @@ import { StreamHandler } from './StreamHandler';
 import { getConversationUrl } from './helpers';
 import { ClientConversation, useConversation } from './useConversation';
 import { useToast } from '@components/ui/use-toast';
-import { signInWithGoogle } from '@lib/firebase';
 import { useSession } from '@lib/firebase/context';
 import { Bot } from '@lib/firebase/models';
 import { Result, err, isErr, ok } from '@lib/result';

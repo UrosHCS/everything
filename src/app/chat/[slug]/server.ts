@@ -1,7 +1,10 @@
 import { getConversationUrl } from './helpers';
 import { repos } from '@backend/repositories/repos';
+import { DocumentData, QueryDocumentSnapshot } from '@google-cloud/firestore';
 import { Bot, QnA } from '@lib/firebase/models';
 import { DocWithId } from '@lib/types';
+
+type C = QueryDocumentSnapshot<DocumentData, DocumentData>;
 
 export type ConversationPreview = {
   id: string;
@@ -25,7 +28,7 @@ export async function getConversationPreviewsForBot(bot: DocWithId<Bot>): Promis
   }));
 }
 
-function getName(conversation: any): string {
+function getName(conversation: C): string {
   const qna = conversation.get('messages') as QnA[];
 
   if (!qna.length) return 'Empty conversation';
