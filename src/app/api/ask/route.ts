@@ -106,7 +106,7 @@ async function* openMockStream(user: DocWithId<User>) {
   }
 }
 
-export async function openStreamWithOpenAI(
+async function openStreamWithOpenAI(
   user: DocWithId<User>,
   existingOrNewConversation: DocWithId<Conversation> | Conversation,
   question: string,
@@ -142,8 +142,8 @@ async function createOpenAIResponseStream(
   question: string,
 ) {
   // First, open a stream with OpenAI
-  const stream = openMockStream(user);
-  // const stream = await openStreamWithOpenAI(user, existingOrNewConversation, question);
+  const stream =
+    Math.random() < 10 ? openMockStream(user) : await openStreamWithOpenAI(user, existingOrNewConversation, question);
 
   // Only if it succeeds, create a conversation.
   const conversation = await createNewConversationIfNeeded(existingOrNewConversation);
