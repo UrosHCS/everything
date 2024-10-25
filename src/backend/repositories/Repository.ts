@@ -94,7 +94,6 @@ export class Repository<T> {
   }
 
   async update(id: string, data: Partial<T>): Promise<void> {
-    // @ts-expect-error firestore type is anoying
     await this.ref.doc(id).update(data);
   }
 
@@ -103,7 +102,6 @@ export class Repository<T> {
     field: K,
     data: T[K] extends Array<infer E> ? E : never,
   ): Promise<void> {
-    // @ts-expect-error firestore type is anoying
     await this.ref.doc(id).update({
       [field]: FieldValue.arrayUnion(data),
     });

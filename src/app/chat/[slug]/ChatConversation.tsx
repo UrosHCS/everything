@@ -17,29 +17,37 @@ type Props = {
   bot: DocWithId<Bot>;
   initialConversation?: DocWithId<Conversation>;
   conversationPreviews: ConversationPreview[];
+  timings: Record<string, number>;
 };
 
-export function ChatConversation({ bot, initialConversation, conversationPreviews }: Props) {
+export function ChatConversation({ bot, initialConversation, conversationPreviews, timings }: Props) {
   const { conversation, ask, streamingMessage, isLoading } = useChat(bot, initialConversation);
 
   return (
     <section className="flex h-full w-full max-w-xl flex-col overflow-y-hidden">
-      <h2 className="flex gap-4 px-2 py-4 text-3xl font-semibold opacity-80">
-        <ConversationSidebar conversationPreviews={conversationPreviews}>
-          <Button className="rounded" variant="outline" size="icon">
-            <MoreHorizontal />
-          </Button>
-        </ConversationSidebar>
-        <Image
-          className="rounded-full border-2 border-slate-700"
-          src={bot.image}
-          width={36}
-          height={36}
-          alt={bot.name}
-          priority={true}
-        />
-        {bot.name}
-      </h2>
+      <div className="flex flex-row justify-between">
+        <h2 className="flex gap-4 px-2 py-4 text-3xl font-semibold opacity-80">
+          <ConversationSidebar conversationPreviews={conversationPreviews}>
+            <Button className="rounded" variant="outline" size="icon">
+              <MoreHorizontal />
+            </Button>
+          </ConversationSidebar>
+          <Image
+            className="rounded-full border-2 border-slate-700"
+            src={bot.image}
+            width={36}
+            height={36}
+            alt={bot.name}
+            priority={true}
+          />
+          {bot.name}
+        </h2>
+        <div className="flex flex-col justify-center">
+          {Object.entries(timings).map(([key, value]) => (
+            <div className="text-xs" key={key}>{`${key}: ${value.toFixed(2)} ms`}</div>
+          ))}
+        </div>
+      </div>
 
       <Card className="mb-2 flex h-full flex-col overflow-y-hidden">
         <div className="flex h-full flex-col gap-2 overflow-y-auto p-4">

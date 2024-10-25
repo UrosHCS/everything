@@ -8,7 +8,7 @@ import { Bot, Conversation, User } from '@lib/firebase/models';
 import { DocWithId } from '@lib/types';
 import { Timestamp } from 'firebase/firestore';
 import { OpenAI } from 'openai';
-import { ChatCompletionMessageParam } from 'openai/resources/chat';
+import { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 
 const MAX_TOKENS = 150;
 
@@ -86,6 +86,26 @@ function getSystemPrompt(user: User, bot: Bot): string {
   return `${bot.prompt} Your answers should have max ${MAX_TOKENS} tokens. ${getUserPrompt(user)}`;
 }
 
+async function* openMockStream(user: DocWithId<User>) {
+  const response = `Dear ${
+    user.name || 'John Doe'
+  }, your question will not be answered because I don't wanna pay for more OpenAI credits.`;
+
+  const chunks = response.split(' ');
+
+  for (let i = 0; i < chunks.length; i++) {
+    yield {
+      choices: [
+        {
+          delta: { content: `${chunks[i]}${i < chunks.length - 1 ? ' ' : ''}` },
+        },
+      ],
+    };
+
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+}
+
 async function openStreamWithOpenAI(
   user: DocWithId<User>,
   existingOrNewConversation: DocWithId<Conversation> | Conversation,
@@ -95,7 +115,7 @@ async function openStreamWithOpenAI(
 
   try {
     return openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
+      model: 'gpt-4o-mini',
       messages: [
         { role: 'system', content: existingOrNewConversation.systemPrompt },
         ...messages,
@@ -122,7 +142,8 @@ async function createOpenAIResponseStream(
   question: string,
 ) {
   // First, open a stream with OpenAI
-  const stream = await openStreamWithOpenAI(user, existingOrNewConversation, question);
+  const stream = openMockStream(user);
+  // const stream = await openStreamWithOpenAI(user, existingOrNewConversation, question);
 
   // Only if it succeeds, create a conversation.
   const conversation = await createNewConversationIfNeeded(existingOrNewConversation);
@@ -141,12 +162,11 @@ async function createOpenAIResponseStream(
             answer += chunk;
           }
         }
-        // Before closing the controller we mush make sure to add the question and answer to the conversation.
+        // Before closing the controller we must make sure to add the question and answer to the conversation.
         // So that when the client redirects to the conversation page, the question and answer are already there.
         await addQuestionAndAnswerToConversation(conversation, question, answer);
       } catch (error) {
-        console.error('There was an erro while streaming the response from OpenAI');
-        console.error(error);
+        console.error('There was an error while streaming the response from OpenAI');
         controller.error(error);
       }
       controller.close();
