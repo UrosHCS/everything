@@ -1,9 +1,9 @@
-import { ThemeProvider } from '../components/ThemeProvider';
 import RootClientComponent from './RootClientComponent';
 import './globals.css';
 import { Toaster } from '@components/ui/toaster';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
+import { cookies } from 'next/headers';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -21,16 +21,13 @@ export const metadata: Metadata = {
   description: 'Chat with a fortune teller, prophet or an astrologer.',
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  // Order of class names is important so that we don't get a hydration error.
-  // TODO: replace next-themes with something that can work with RSC.
-  const classNames = ['h-[100dvh]', 'dark'];
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const theme = (await cookies()).get('theme')?.value || 'dark';
+
   return (
-    <html lang="en" className={classNames.join(' ')} style={{ colorScheme: 'dark' }}>
+    <html lang="en" className={`h-[100dvh] ${theme}`} style={{ colorScheme: 'dark' }}>
       <body className={`${geistSans.variable} ${geistMono.variable} flex h-full flex-col antialiased`}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <RootClientComponent>{children}</RootClientComponent>
-        </ThemeProvider>
+        <RootClientComponent>{children}</RootClientComponent>
         <Toaster />
       </body>
     </html>

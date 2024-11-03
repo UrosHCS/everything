@@ -1,5 +1,4 @@
 import ProfileButtonDropdown from './profile/ProfileButtonDropdown';
-import { ModeToggle } from './ui/mode-toggle';
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -7,6 +6,7 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from './ui/navigation-menu';
+import { ThemeSelector } from './ui/theme-selector';
 import Link from 'next/link';
 
 export function Header() {
@@ -22,15 +22,10 @@ export function Header() {
                 <NavigationMenuLink className={cls}>CHAT</NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Link href="/about" legacyBehavior passHref>
-                <NavigationMenuLink className={cls}>ABOUT</NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem>
           </NavigationMenuList>
           <NavigationMenuList>
             <NavigationMenuItem>
-              <ModeToggle />
+              <ThemeSelector />
             </NavigationMenuItem>
             <NavigationMenuItem>
               <ProfileButtonDropdown />
