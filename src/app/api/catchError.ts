@@ -1,11 +1,11 @@
 import { HTTPRequestError } from './errors/HTTPRequestError';
 
 export function catchError(
-  handler: (request: Request) => Response | Promise<Response>,
-): (request: Request) => Promise<Response> {
-  return async (request: Request): Promise<Response> => {
+  handler: (request: Request, response: Response) => Response | Promise<Response>,
+): (request: Request, response: Response) => Promise<Response> {
+  return async (request: Request, response: Response): Promise<Response> => {
     try {
-      return await handler(request);
+      return await handler(request, response);
     } catch (error) {
       return handleError(error);
     }

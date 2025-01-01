@@ -3,12 +3,14 @@
 import ProfileImage from './ProfileImage';
 import { Button } from '@components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@components/ui/dropdown-menu';
-import { logout } from '@lib/firebase';
-import { useSession } from '@lib/firebase/context';
+import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 
 export default function ProfileButtonDropdown() {
-  const { user } = useSession();
+  const { data: session } = useSession();
+
+  const user = session?.user;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -23,7 +25,7 @@ export default function ProfileButtonDropdown() {
             <Link href="/profile">
               <DropdownMenuItem className="cursor-pointer">Profile</DropdownMenuItem>
             </Link>
-            <DropdownMenuItem className="cursor-pointer" onClick={logout}>
+            <DropdownMenuItem className="cursor-pointer" onClick={() => signOut()}>
               Logout
             </DropdownMenuItem>
           </>

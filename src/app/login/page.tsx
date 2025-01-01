@@ -1,7 +1,7 @@
 'use client';
 
 import { LogInWithGoogleButton } from '@components/LogInWithGoogle';
-import { useSession } from '@lib/firebase/context';
+import { useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
 
 // import { useState } from 'react';
@@ -10,11 +10,11 @@ export default function Login() {
   // const [email, setEmail] = useState('');
   // const [password, setPassword] = useState('');
 
-  const { user, status } = useSession();
+  const { data: session, status } = useSession();
 
   if (status === 'loading') return <p>spinner</p>;
 
-  if (user) {
+  if (session?.user) {
     redirect('/profile');
   }
 

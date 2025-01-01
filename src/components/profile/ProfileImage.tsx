@@ -1,9 +1,10 @@
-import { useSession } from '@lib/firebase/context';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 
 export default function ProfileImage() {
-  const { user, status } = useSession();
+  const { data: session, status } = useSession();
 
+  const user = session?.user;
   if (status === 'loading') {
     return null;
   }
@@ -28,11 +29,9 @@ export default function ProfileImage() {
     );
   }
 
-  if (user.photoURL) {
-    return (
-      <Image className="rounded-full" width={32} height={32} src={user.photoURL} alt={user.displayName ?? 'Profile'} />
-    );
+  if (user.image) {
+    return <Image className="rounded-full" width={32} height={32} src={user.image} alt={user.name ?? 'Profile'} />;
   }
 
-  return <span>{user.displayName?.slice(0, 1) ?? 'P'}</span>;
+  return <span>{user.name?.slice(0, 1) ?? 'P'}</span>;
 }

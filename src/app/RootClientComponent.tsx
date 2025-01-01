@@ -1,7 +1,7 @@
 'use client';
 
 import { Header } from '../components/Header';
-import { FirebaseSessionProvider } from '@lib/firebase/context';
+import { SessionProvider } from 'next-auth/react';
 import React from 'react';
 
 type Props = {
@@ -13,9 +13,9 @@ type Props = {
  */
 export default function RootClientComponent({ children }: Props) {
   return (
-    <FirebaseSessionProvider>
+    <SessionProvider>
       <Header />
       <main className="flex h-full flex-col items-center overflow-y-hidden">{children}</main>
-    </FirebaseSessionProvider>
+    </SessionProvider>
   );
 }

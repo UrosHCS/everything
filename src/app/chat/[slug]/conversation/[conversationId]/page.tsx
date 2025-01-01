@@ -1,8 +1,7 @@
 import { ChatConversation } from '../../ChatConversation';
 import { getBotBySlug, getConversationPreviewsForBot } from '../../server';
-import { repos } from '@backend/repositories/repos';
-import { Conversation } from '@lib/firebase/models';
-import { DocWithId } from '@lib/types';
+import { db } from '@backend/drizzle/db';
+import { Conversation } from '@backend/drizzle/schema';
 import { redirect } from 'next/navigation';
 
 type Props = {
@@ -44,8 +43,10 @@ export default async function ChatBotConversation({ params }: Props) {
   );
 }
 
-async function getConversationById(id: string): Promise<DocWithId<Conversation> | undefined> {
+async function getConversationById(id: string): Promise<Conversation | undefined> {
   if (!id) return;
 
-  return repos.conversations.findById(id);
+  return db.query.conversations.findFirst({
+    where: (table, { eq }) => eq(table.id, Number(id)),
+  });
 }

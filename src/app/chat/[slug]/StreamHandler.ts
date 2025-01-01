@@ -1,6 +1,6 @@
 type StreamData = {
   message: string;
-  conversationId: string;
+  conversationId: number;
   isNewConversation: boolean;
   isErrorMessage: boolean;
 };
@@ -10,7 +10,7 @@ export class StreamHandler {
 
   constructor(
     private stream: ReadableStreamDefaultReader<Uint8Array>,
-    private conversationId: string | undefined,
+    private conversationId: number | undefined,
     private onAnswerChunk: (chunk: string) => void,
   ) {
     this.expectNewConversationId = !conversationId;
@@ -22,7 +22,7 @@ export class StreamHandler {
     } catch {
       return {
         message: "Sorry, I can't give you an answer right now. My brain is fried. Hopefully someone will fix it soon.",
-        conversationId: '',
+        conversationId: 0,
         isNewConversation: false,
         isErrorMessage: true,
       };
@@ -71,7 +71,7 @@ export class StreamHandler {
       throw new Error(`First chunk should be "conversationId:{id}", but got "${decoded}"`);
     }
 
-    this.conversationId = conversationId;
+    this.conversationId = Number(conversationId);
 
     return messageChunk ?? '';
   }

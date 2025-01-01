@@ -5,17 +5,16 @@ import { ConversationSidebar } from './ConversationSidebar';
 import Message from './Message';
 import { ConversationPreview } from './server';
 import { useChat } from './useChat';
+import { Bot, Conversation } from '@backend/drizzle/schema';
 import { Button } from '@components/ui/button';
 import { Card } from '@components/ui/card';
-import { Bot, Conversation } from '@lib/firebase/models';
-import { DocWithId } from '@lib/types';
 import Image from 'next/image';
 import { Fragment } from 'react';
 import { MoreHorizontal } from 'react-feather';
 
 type Props = {
-  bot: DocWithId<Bot>;
-  initialConversation?: DocWithId<Conversation>;
+  bot: Bot;
+  initialConversation?: Conversation;
   conversationPreviews: ConversationPreview[];
   timings: Record<string, number>;
 };

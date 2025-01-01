@@ -1,6 +1,6 @@
-import { repos } from '@backend/repositories/repos';
+import { db } from '@backend/drizzle/db';
+import { Bot } from '@backend/drizzle/schema';
 import { Card } from '@components/ui/card';
-import { Bot } from '@lib/firebase/models';
 import Image from 'next/image';
 
 export default function Home() {
@@ -13,7 +13,7 @@ export default function Home() {
 }
 
 async function Bots() {
-  const bots = await repos.bots.findAll();
+  const bots = await db.query.bots.findMany();
 
   return (
     <ul>

@@ -2,16 +2,17 @@ import { LogInWithGoogleButton } from '@components/LogInWithGoogle';
 import { LogOutButton } from '@components/LogOutButton';
 import ProfileImage from '@components/profile/ProfileImage';
 import { Button } from '@components/ui/button';
-import { User, deleteAccount } from '@lib/firebase';
-import { useSession } from '@lib/firebase/context';
+import { useSession } from 'next-auth/react';
 import { Mail } from 'react-feather';
 
 export function ProfileData() {
-  const { user, status } = useSession();
+  const { data: session, status } = useSession();
 
   if (status === 'loading') {
     return <p>Loading your profile</p>;
   }
+
+  const user = session?.user;
 
   if (!user) {
     return (
@@ -25,14 +26,14 @@ export function ProfileData() {
     <div className="flex flex-col items-center gap-2">
       <div className="flex items-center gap-2">
         <ProfileImage />
-        <p>{user.displayName}</p>
+        <p>{user.name}</p>
       </div>
       <div className="flex items-center gap-2">
         <Mail />
         <p>{user.email}</p>
       </div>
       <div className="flex flex-col gap-2 pt-4">
-        <Button className="bg-red-600 hover:bg-red-700" onClick={() => deleteAccountWithConfirmation(user)}>
+        <Button className="bg-red-600 hover:bg-red-700" onClick={deleteAccountWithConfirmation}>
           Delete account
         </Button>
         <LogOutButton />
@@ -41,7 +42,7 @@ export function ProfileData() {
   );
 }
 
-function deleteAccountWithConfirmation(user: User) {
+function deleteAccountWithConfirmation() {
   if (!confirm('Are you sure you want to delete your account?')) {
     return;
   }
@@ -50,5 +51,5 @@ function deleteAccountWithConfirmation(user: User) {
     return;
   }
 
-  deleteAccount(user);
+  alert('Account deletion not implemented yet with next-auth');
 }

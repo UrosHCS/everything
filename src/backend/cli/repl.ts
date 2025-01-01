@@ -1,11 +1,11 @@
-// eslint-disable-next-line prettier/prettier
-import './dotenv';
-import { app, auth, firestoreInstance } from '../firebase';
-// eslint-disable-next-line prettier/prettier
-import { repos } from '../repositories/repos';
+import { loadEnvConfig } from '@next/env';
+loadEnvConfig(process.cwd());
+
 import os from 'os';
 import path from 'path';
 import repl from 'repl';
+import { db } from '../drizzle/db';
+
 
 interface RegisterFunction {
   (key: string, value: unknown, description: string): void;
@@ -16,10 +16,7 @@ process.env.NODE_REPL_HISTORY = path.join(os.homedir(), '.node_repl_history');
 const help: string[] = [];
 
 const registerVariables = async (register: RegisterFunction) => {
-  register('firestoreInstance', firestoreInstance, 'firestore instance object');
-  register('app', app, 'firebase app object');
-  register('auth', auth, 'firebase auth object');
-  register('repos', repos, 'all the repos');
+  register('db', db, 'drizzle database object');
 };
 
 const init = async (): Promise<void> => {

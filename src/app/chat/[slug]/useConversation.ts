@@ -1,5 +1,4 @@
-import { Conversation } from '@lib/firebase/models';
-import { DocWithId } from '@lib/types';
+import { Conversation } from '@backend/drizzle/schema';
 import { useReducer } from 'react';
 
 type Action =
@@ -15,9 +14,9 @@ type Action =
       type: 'undoQuestion';
     };
 
-export type ClientConversation = Pick<DocWithId<Conversation>, 'id' | 'createdAt' | 'messages'>;
+export type ClientConversation = Pick<Conversation, 'id' | 'createdAt' | 'messages'>;
 
-type UnauthenticatedClientConversation = Pick<DocWithId<Conversation>, 'messages'> & {
+type UnauthenticatedClientConversation = Pick<Conversation, 'messages'> & {
   id: null;
   createdAt: null | Conversation['createdAt'];
 };
@@ -25,7 +24,7 @@ type UnauthenticatedClientConversation = Pick<DocWithId<Conversation>, 'messages
 export type ConversationState = ClientConversation | UnauthenticatedClientConversation;
 
 function reducer(state: ConversationState, action: Action): ConversationState {
-  const now = new Date().toISOString();
+  const now = new Date();
 
   switch (action.type) {
     case 'addQuestion':

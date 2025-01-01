@@ -1,37 +1,35 @@
 import { getConversationUrl } from './helpers';
-import { repos } from '@backend/repositories/repos';
-import { DocumentData, QueryDocumentSnapshot } from '@google-cloud/firestore';
-import { Bot, QnA } from '@lib/firebase/models';
-import { DocWithId } from '@lib/types';
-
-type C = QueryDocumentSnapshot<DocumentData, DocumentData>;
+import { db } from '@backend/drizzle/db';
+import { Bot, Conversation, QnA, bots, conversations } from '@backend/drizzle/schema';
+import { eq } from 'drizzle-orm';
 
 export type ConversationPreview = {
-  id: string;
+  id: number;
   name: QnA['question']['body'];
   url: string;
 };
 
-export async function getBotBySlug(slug: string): Promise<DocWithId<Bot> | undefined> {
+export async function getBotBySlug(slug: string): Promise<Bot | undefined> {
   if (!slug) return;
 
-  return repos.bots.findOneBy('slug', slug);
+  return db.query.bots.findFirst({ where: eq(bots.slug, slug) });
 }
 
-export async function getConversationPreviewsForBot(bot: DocWithId<Bot>): Promise<ConversationPreview[]> {
-  const res = await repos.conversations.ref.select('id', 'messages').where('botId', '==', bot.id).get();
+export async function getConversationPreviewsForBot(bot: Bot): Promise<ConversationPreview[]> {
+  const res = await db.query.conversations.findMany({
+    where: eq(conversations.botId, bot.id),
+    columns: { id: true, messages: true },
+  });
 
-  return res.docs.map(conversation => ({
+  return res.map(conversation => ({
     id: conversation.id,
     name: getName(conversation),
     url: getConversationUrl(bot, conversation),
   }));
 }
 
-function getName(conversation: C): string {
-  const qna = conversation.get('messages') as QnA[];
+function getName(conversation: Pick<Conversation, 'id' | 'messages'>): string {
+  const firstQnA = conversation.messages[0];
 
-  if (!qna.length) return 'Empty conversation';
-
-  return qna[0].question.body || 'Empty conversation';
+  return firstQnA?.question.body || 'Empty conversation';
 }

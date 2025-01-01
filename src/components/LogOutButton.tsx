@@ -1,6 +1,6 @@
 import { Button } from './ui/button';
-import { logout } from '@lib/firebase';
+import { signOut } from 'next-auth/react';
 
 export function LogOutButton() {
-  return <Button onClick={logout}>Log out</Button>;
+  return <Button onClick={() => signOut()}>Log out</Button>;
 }

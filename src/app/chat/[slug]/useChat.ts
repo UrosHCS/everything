@@ -1,17 +1,18 @@
 import { StreamHandler } from './StreamHandler';
 import { getConversationUrl } from './helpers';
-import { ClientConversation, useConversation } from './useConversation';
+import { useConversation } from './useConversation';
+import { Bot, Conversation } from '@backend/drizzle/schema';
 import { useToast } from '@components/ui/use-toast';
-import { useSession } from '@lib/firebase/context';
-import { Bot } from '@lib/firebase/models';
 import { Result, err, isErr, ok } from '@lib/result';
-import { DocWithId } from '@lib/types';
-import { User } from 'firebase/auth';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export const useChat = (bot: DocWithId<Bot>, initialConversation?: ClientConversation) => {
-  const { user } = useSession();
+export const useChat = (bot: Bot, initialConversation?: Conversation) => {
+  const { data } = useSession();
+
+  const user = data?.user;
+
   const router = useRouter();
   const { toast } = useToast();
 
@@ -36,7 +37,7 @@ export const useChat = (bot: DocWithId<Bot>, initialConversation?: ClientConvers
 
     addQuestion(question);
 
-    const result = await getResponseStream(bot, user, question, initialConversation?.id);
+    const result = await getResponseStream(bot, question, initialConversation?.id);
 
     if (isErr(result)) {
       toast({
@@ -84,19 +85,17 @@ export const useChat = (bot: DocWithId<Bot>, initialConversation?: ClientConvers
 };
 
 async function getResponseStream(
-  bot: DocWithId<Bot>,
-  user: User,
+  bot: Bot,
   question: string,
-  conversationId?: string,
+  conversationId?: number,
 ): Promise<Result<ReadableStreamDefaultReader<Uint8Array> | undefined, string>> {
-  const token = await user.getIdToken();
-
   const res = await fetch('/api/ask', {
     method: 'POST',
     body: JSON.stringify({ question, slug: bot.slug, conversationId }),
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
+      // Should be set by next-auth
+      // Authorization: `Bearer ${token}`,
     },
   });
 

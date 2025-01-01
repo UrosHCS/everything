@@ -1,6 +1,5 @@
-import { Bot, Conversation } from '@lib/firebase/models';
-import { DocWithId } from '@lib/types';
+import { Bot, Conversation } from '@backend/drizzle/schema';
 
-export function getConversationUrl(bot: Pick<Bot, 'slug'>, conversation: Pick<DocWithId<Conversation>, 'id'>) {
+export function getConversationUrl(bot: Pick<Bot, 'slug'>, conversation: Pick<Conversation, 'id'>) {
   return `/chat/${bot.slug}/conversation/${conversation.id}`;
 }
