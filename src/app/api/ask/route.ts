@@ -6,8 +6,6 @@ import { db } from '@backend/drizzle/db';
 import { Bot, Conversation, ConversationInsert, User, bots, conversations, users } from '@backend/drizzle/schema';
 import { serverConfig } from '@backend/serverConfig';
 import { and, eq, sql } from 'drizzle-orm';
-import { NextApiResponse } from 'next';
-import { NextApiRequest } from 'next';
 import { OpenAI } from 'openai';
 import { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 

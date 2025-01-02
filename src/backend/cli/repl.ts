@@ -1,11 +1,10 @@
+import { db } from '../drizzle/db';
 import { loadEnvConfig } from '@next/env';
-loadEnvConfig(process.cwd());
-
 import os from 'os';
 import path from 'path';
 import repl from 'repl';
-import { db } from '../drizzle/db';
 
+loadEnvConfig(process.cwd());
 
 interface RegisterFunction {
   (key: string, value: unknown, description: string): void;
