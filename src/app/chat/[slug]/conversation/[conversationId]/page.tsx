@@ -27,7 +27,7 @@ export default async function ChatBotConversation({ params }: Props) {
   timings.getBotBySlug = performance.now() - start;
 
   const start2 = performance.now();
-  const conversation = await getConversationById(conversationId, session.user.id);
+  const conversation = await getConversationById(conversationId);
   timings.getConversationById = performance.now() - start2;
 
   if (!bot || !conversation) {
@@ -48,10 +48,10 @@ export default async function ChatBotConversation({ params }: Props) {
   );
 }
 
-async function getConversationById(id: string, userId: number): Promise<Conversation | undefined> {
+async function getConversationById(id: string): Promise<Conversation | undefined> {
   if (!id) return;
 
   return db.query.conversations.findFirst({
-    where: (table, { eq, and }) => and(eq(table.id, Number(id)), eq(table.userId, userId)),
+    where: (table, { eq }) => eq(table.id, Number(id)),
   });
 }
