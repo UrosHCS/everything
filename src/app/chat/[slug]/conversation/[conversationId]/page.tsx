@@ -1,5 +1,6 @@
 import { ChatConversation } from '../../ChatConversation';
 import { getBotBySlug, getConversationPreviewsForBot } from '../../server';
+import { getServerSideSession } from '@backend/auth/getServerSideSession';
 import { db } from '@backend/drizzle/db';
 import { Conversation } from '@backend/drizzle/schema';
 import { redirect } from 'next/navigation';
@@ -9,7 +10,11 @@ type Props = {
 };
 
 export default async function ChatBotConversation({ params }: Props) {
-  const { slug, conversationId } = await params;
+  const [{ slug, conversationId }, session] = await Promise.all([params, getServerSideSession()]);
+
+  if (!session) {
+    return redirect('/');
+  }
 
   const timings = {
     getBotBySlug: 0,
@@ -22,7 +27,7 @@ export default async function ChatBotConversation({ params }: Props) {
   timings.getBotBySlug = performance.now() - start;
 
   const start2 = performance.now();
-  const conversation = await getConversationById(conversationId);
+  const conversation = await getConversationById(conversationId, session.user.id);
   timings.getConversationById = performance.now() - start2;
 
   if (!bot || !conversation) {
@@ -43,10 +48,10 @@ export default async function ChatBotConversation({ params }: Props) {
   );
 }
 
-async function getConversationById(id: string): Promise<Conversation | undefined> {
+async function getConversationById(id: string, userId: number): Promise<Conversation | undefined> {
   if (!id) return;
 
   return db.query.conversations.findFirst({
-    where: (table, { eq }) => eq(table.id, Number(id)),
+    where: (table, { eq, and }) => and(eq(table.id, Number(id)), eq(table.userId, userId)),
   });
 }
