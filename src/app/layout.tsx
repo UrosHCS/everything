@@ -25,7 +25,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const theme = (await cookies()).get('theme')?.value || 'dark';
 
   return (
-    <html lang="en" className={`h-[100dvh] ${theme}`} style={{ colorScheme: 'dark' }}>
+    <html lang="en" className={`h-[100svh] ${theme}`} style={{ colorScheme: 'dark' }}>
       <body className={`${geistSans.variable} ${geistMono.variable} flex h-full flex-col antialiased`}>
         <RootClientComponent>{children}</RootClientComponent>
         <Toaster />

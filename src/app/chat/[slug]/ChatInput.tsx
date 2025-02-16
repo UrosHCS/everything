@@ -10,7 +10,7 @@ import * as z from 'zod';
 
 type Props = {
   ask: (question: string) => void;
-  shouldDisable: boolean;
+  isLoading: boolean;
 };
 
 const FormSchema = z.object({
@@ -28,7 +28,7 @@ type FormData = z.infer<typeof FormSchema>;
 
 const QUESTION_KEY = 'question';
 
-export function ChatInput({ ask, shouldDisable }: Props) {
+export function ChatInput({ ask, isLoading }: Props) {
   const { data: session, status } = useSession();
 
   const user = session?.user;
@@ -43,7 +43,7 @@ export function ChatInput({ ask, shouldDisable }: Props) {
   useEffect(() => {
     const question = localStorage.getItem(QUESTION_KEY);
     if (question) {
-      form.setValue('question', question);
+      form.setValue('question', question, { shouldDirty: true, shouldValidate: true });
       localStorage.removeItem(QUESTION_KEY);
     }
   }, []);
@@ -63,8 +63,7 @@ export function ChatInput({ ask, shouldDisable }: Props) {
     ask(data.question);
   }
 
-  const disableSubmit =
-    shouldDisable || !form.formState.isDirty || !form.formState.isValid || form.formState.isSubmitting;
+  const disableSubmit = isLoading || !form.formState.isDirty || !form.formState.isValid || form.formState.isSubmitting;
 
   return (
     <Form {...form}>

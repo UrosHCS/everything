@@ -58,7 +58,7 @@ export function ChatConversation({ bot, initialConversation, conversationPreview
           })}
         </div>
 
-        <ChatInput ask={ask} shouldDisable={isLoading} />
+        <ChatInput ask={ask} isLoading={isLoading} />
       </Card>
     </section>
   );

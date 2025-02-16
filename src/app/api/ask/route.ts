@@ -82,11 +82,6 @@ function getSystemPrompt(user: User, bot: Bot): string {
 async function openStreamWithAI(existingOrNewConversation: Conversation | ConversationInsert, question: string) {
   const messages = getAiMessages(existingOrNewConversation.messages);
 
-  console.log(`
-    ${existingOrNewConversation.systemPrompt}
-    ${[...messages, { role: 'user', parts: [{ text: question }] }].map(m => `${m.role}: ${m.parts[0].text}`).join('\n')}
-    `);
-
   try {
     const stream = await model.generateContentStream({
       systemInstruction: existingOrNewConversation.systemPrompt,

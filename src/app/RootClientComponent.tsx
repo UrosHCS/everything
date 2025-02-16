@@ -8,9 +8,6 @@ type Props = {
   children: React.ReactNode;
 };
 
-/**
- * First client component. FirebaseSessionProvider uses useState.
- */
 export default function RootClientComponent({ children }: Props) {
   return (
     <SessionProvider>
