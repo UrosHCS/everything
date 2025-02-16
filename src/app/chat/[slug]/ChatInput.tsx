@@ -3,6 +3,7 @@ import { Form, FormControl, FormField, FormItem } from '@components/ui/form';
 import { Input } from '@components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn, useSession } from 'next-auth/react';
+import { useEffect } from 'react';
 import { Send } from 'react-feather';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -25,6 +26,8 @@ const FormSchema = z.object({
 
 type FormData = z.infer<typeof FormSchema>;
 
+const QUESTION_KEY = 'question';
+
 export function ChatInput({ ask, shouldDisable }: Props) {
   const { data: session, status } = useSession();
 
@@ -37,12 +40,21 @@ export function ChatInput({ ask, shouldDisable }: Props) {
     resolver: zodResolver(FormSchema),
   });
 
+  useEffect(() => {
+    const question = localStorage.getItem(QUESTION_KEY);
+    if (question) {
+      form.setValue('question', question);
+      localStorage.removeItem(QUESTION_KEY);
+    }
+  }, []);
+
   function onSubmit(data: FormData) {
     if (status === 'loading') {
       return;
     }
 
     if (!user) {
+      localStorage.setItem(QUESTION_KEY, data.question);
       signIn('google');
       return;
     }

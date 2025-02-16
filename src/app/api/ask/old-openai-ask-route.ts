@@ -5,18 +5,15 @@ import { getServerSideSession } from '@backend/auth/getServerSideSession';
 import { db } from '@backend/drizzle/db';
 import { Bot, Conversation, ConversationInsert, User, bots, conversations, users } from '@backend/drizzle/schema';
 import { serverConfig } from '@backend/serverConfig';
-import { Content, GoogleGenerativeAI } from '@google/generative-ai';
 import { and, eq, sql } from 'drizzle-orm';
-
-const genAI = new GoogleGenerativeAI(serverConfig.googleai.apiKey);
+import { OpenAI } from 'openai';
+import { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 
 const MAX_TOKENS = 150;
 
-const model = genAI.getGenerativeModel({
-  model: serverConfig.googleai.model,
-  generationConfig: {
-    maxOutputTokens: MAX_TOKENS,
-  },
+const openai = new OpenAI({
+  apiKey: serverConfig.openai.apiKey,
+  fetch: fetch,
 });
 
 export const POST = catchError(handler);
@@ -57,7 +54,7 @@ async function handler(request: Request) {
     return modelNotFoundResponse('User', email);
   }
 
-  const openaiStream = await createOpenAIResponseStream(conversation ?? makeNewConversation(user, bot), question);
+  const openaiStream = await createOpenAIResponseStream(user, conversation ?? makeNewConversation(user, bot), question);
 
   return new Response(openaiStream, {
     status: 200,
@@ -79,29 +76,54 @@ function getSystemPrompt(user: User, bot: Bot): string {
   return `${bot.prompt} Your answers should have max ${MAX_TOKENS} tokens. ${getUserPrompt(user)}`;
 }
 
-async function openStreamWithAI(existingOrNewConversation: Conversation | ConversationInsert, question: string) {
-  const messages = getAiMessages(existingOrNewConversation.messages);
+async function* openMockStream(user: User) {
+  const response = `Dear ${
+    user.name || 'John Doe'
+  }, your question will not be answered because I don't wanna pay for more OpenAI credits.`;
 
-  console.log(`
-    ${existingOrNewConversation.systemPrompt}
-    ${[...messages, { role: 'user', parts: [{ text: question }] }].map(m => `${m.role}: ${m.parts[0].text}`).join('\n')}
-    `);
+  const chunks = response.split(' ');
+
+  for (let i = 0; i < chunks.length; i++) {
+    yield {
+      choices: [
+        {
+          delta: { content: `${chunks[i]}${i < chunks.length - 1 ? ' ' : ''}` },
+        },
+      ],
+    };
+
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+}
+
+async function openStreamWithOpenAI(
+  user: User,
+  existingOrNewConversation: Conversation | ConversationInsert,
+  question: string,
+) {
+  const messages = getOpenaiMessages(existingOrNewConversation.messages);
 
   try {
-    const stream = await model.generateContentStream({
-      systemInstruction: existingOrNewConversation.systemPrompt,
-      contents: [...messages, { role: 'user', parts: [{ text: question }] }],
+    return openai.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [
+        { role: 'system', content: existingOrNewConversation.systemPrompt },
+        ...messages,
+        { role: 'user', content: question },
+      ],
+      stream: true,
+      user: user.id.toString(),
+      max_tokens: MAX_TOKENS,
     });
-
-    return stream.stream;
   } catch (error) {
-    console.error('There was an error while opening the stream with Gemini');
+    console.error('There was an error while opening the stream with OpenAI');
     console.error(error);
-    throw new OpenAIStreamError('There was an error while opening the stream with Gemini');
+    throw new OpenAIStreamError('There was an error while opening the stream with OpenAI');
   }
 }
 
 async function createOpenAIResponseStream(
+  user: User,
   /**
    * The conversation param is either an existing conversation (with an id)
    * or a new conversation object (without an id), ready to be saved to the database.
@@ -109,8 +131,9 @@ async function createOpenAIResponseStream(
   existingOrNewConversation: Conversation | ConversationInsert,
   question: string,
 ) {
-  // First, open a stream with AI model
-  const stream = await openStreamWithAI(existingOrNewConversation, question);
+  // First, open a stream with OpenAI
+  const stream =
+    Math.random() < 10 ? openMockStream(user) : await openStreamWithOpenAI(user, existingOrNewConversation, question);
 
   // Only if it succeeds, create a conversation.
   const conversation = await createNewConversationIfNeeded(existingOrNewConversation);
@@ -123,7 +146,7 @@ async function createOpenAIResponseStream(
         controller.enqueue(`conversationId:${conversation.id}:`);
 
         for await (const part of stream) {
-          const chunk = part.candidates?.[0]?.content.parts[0].text;
+          const chunk = part.choices[0]?.delta?.content;
           if (chunk) {
             controller.enqueue(chunk);
             answer += chunk;
@@ -145,13 +168,13 @@ async function createOpenAIResponseStream(
   });
 }
 
-function getAiMessages(conversationMessages: ConversationInsert['messages']): Content[] {
-  const messages: Content[] = [];
+function getOpenaiMessages(conversationMessages: ConversationInsert['messages']): ChatCompletionMessageParam[] {
+  const messages: ChatCompletionMessageParam[] = [];
 
   conversationMessages?.forEach(message => {
-    messages.push({ role: 'user', parts: [{ text: message.question.body }] });
+    messages.push({ role: 'user', content: message.question.body });
     if (message.answer) {
-      messages.push({ role: 'assistant', parts: [{ text: message.answer.body }] });
+      messages.push({ role: 'assistant', content: message.answer.body });
     }
   });
 
@@ -162,10 +185,8 @@ function getUserPrompt(user: User): string {
   const gender = user.gender || 'person';
   const name = user.name ? ` named ${user.name}` : '';
   const dateOfBirth = user.dob ? `, born on ${user.dob.toDateString()}` : '';
-  const nameExplanation = user.name ? ' Use the first name only, if both first and last name are provided.' : '';
-  const languagePrompt = "Always respond in the same language as the last user's message.";
 
-  return `You are talking to a ${gender}${name}${dateOfBirth}.${nameExplanation} ${languagePrompt}`;
+  return `You are talking to a ${gender}${name}${dateOfBirth}.`;
 }
 
 async function createNewConversationIfNeeded(

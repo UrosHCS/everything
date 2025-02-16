@@ -16,36 +16,15 @@ export default async function ChatBotConversation({ params }: Props) {
     return redirect('/');
   }
 
-  const timings = {
-    getBotBySlug: 0,
-    getConversationById: 0,
-    getConversationPreviewsForBot: 0,
-  };
-
-  const start = performance.now();
-  const bot = await getBotBySlug(slug);
-  timings.getBotBySlug = performance.now() - start;
-
-  const start2 = performance.now();
-  const conversation = await getConversationById(conversationId);
-  timings.getConversationById = performance.now() - start2;
+  const [bot, conversation] = await Promise.all([getBotBySlug(slug), getConversationById(conversationId)]);
 
   if (!bot || !conversation) {
     redirect('/');
   }
 
-  const start3 = performance.now();
   const conversationPreviews = await getConversationPreviewsForBot(bot);
-  timings.getConversationPreviewsForBot = performance.now() - start3;
 
-  return (
-    <ChatConversation
-      bot={bot}
-      conversationPreviews={conversationPreviews}
-      initialConversation={conversation}
-      timings={timings}
-    />
-  );
+  return <ChatConversation bot={bot} conversationPreviews={conversationPreviews} initialConversation={conversation} />;
 }
 
 async function getConversationById(id: string): Promise<Conversation | undefined> {

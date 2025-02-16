@@ -16,10 +16,9 @@ type Props = {
   bot: Bot;
   initialConversation?: Conversation;
   conversationPreviews: ConversationPreview[];
-  timings: Record<string, number>;
 };
 
-export function ChatConversation({ bot, initialConversation, conversationPreviews, timings }: Props) {
+export function ChatConversation({ bot, initialConversation, conversationPreviews }: Props) {
   const { conversation, ask, streamingMessage, isLoading } = useChat(bot, initialConversation);
 
   return (
@@ -41,11 +40,6 @@ export function ChatConversation({ bot, initialConversation, conversationPreview
           />
           {bot.name}
         </h2>
-        <div className="flex flex-col justify-center">
-          {Object.entries(timings).map(([key, value]) => (
-            <div className="text-xs" key={key}>{`${key}: ${value.toFixed(2)} ms`}</div>
-          ))}
-        </div>
       </div>
 
       <Card className="mb-2 flex h-full flex-col overflow-y-hidden">
